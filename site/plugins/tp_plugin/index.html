@@ -1,0 +1,813 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../dca_plugin/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>TP - Hawkbot</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Hawkbot" class="md-header__button md-logo" aria-label="Hawkbot" data-md-component="logo">
+      
+  <img src="../../img/hawkbot_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hawkbot
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              TP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Hawkbot" class="md-nav__button md-logo" aria-label="Hawkbot" data-md-component="logo">
+      
+  <img src="../../img/hawkbot_logo.svg" alt="logo">
+
+    </a>
+    Hawkbot
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Framework
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exchanges/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exchanges
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Plugins
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Plugins
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About plugins
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    TP
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dca_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    DCA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hedge_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hedge
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_autoreduce_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multisymbol autoreduce
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strategies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../example_configs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Example configs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>TP</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="hawkbot.plugins.tp"></a>
+  <div class="doc doc-contents first">
+  
+      <p>The TP plugin can be used to calculate take-profit orders. There are various configuration options to determine where the take-profit orders are to be placed.</p>
+
+<details class="example" open>
+  <summary>Minimum example</summary>
+  <p>The following plugin config will place 1 take-profit order and place it at 0.28% distance from the position price::</p>
+<div class="codehilite"><pre><span></span><code>&quot;tp&quot;: {
+    &quot;minimum_tp&quot;: 0.0028
+}
+</code></pre></div>
+</details>
+<details class="example" open>
+  <summary>Grid of take-profit orders</summary>
+  <p>The following plugin config will place 3 take-profit orders, the first take-profit order placed at 0.28% distance from the position price,
+and the next 2 orders each placed 0.1% further away. This will lead to the orders being 0.28%, 0.38% and 0.48% from the position price::</p>
+<div class="codehilite"><pre><span></span><code>&quot;tp&quot;: {
+    &quot;minimum_tp&quot;: 0.0028,
+    &quot;maximum_tp_orders&quot;: 3,
+    &quot;tp_interval&quot;: 0.001
+}
+</code></pre></div>
+</details>
+<details class="example" open>
+  <summary>Trailing take-profit</summary>
+  <p>The following plugin config will place 1 take-profit order at 0.5% distance from the position price. Once the price goes beyond 0.19% in profit, it will place a stop-limit
+order at 0.14% behind the activation price (meaning at 0.05% from the position price). After this, it will move the stop-limit order at 0.2% from the current price. The
+close price is 3 times the price step behind the stop-limit price::</p>
+<div class="codehilite"><pre><span></span><code>&quot;tp&quot;: {
+    &quot;minimum_tp&quot;: 0.005,
+    &quot;trailing_enabled&quot;: true,
+    &quot;trailing_activation_distance_from_position_price&quot;: 0.0019,
+    &quot;trailing_trigger_distance_from_current_price&quot;: 0.0014,
+    &quot;trailing_execution_distance_price_steps&quot;: 3,
+    &quot;trailing_shift_threshold&quot;: 0.002
+},
+</code></pre></div>
+</details>
+
+
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.enabled">enabled</span></code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>indicates if the plugin is enabled or not. If not specified, the value is true by default if there is a 'tp' block present in the strategy config, otherwise
+     the default is false</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.minimum_tp">minimum_tp</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>specifies the distance from the position price at which the first take-profit order should be placed</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.maximum_tp_orders">maximum_tp_orders</span></code></td>
+          <td>
+                <code>int = 1</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the number of take-profit orders that should be placed. The number of orders will adhere to the minimum quantity and minimum notional,
+                     which could result in less orders than specified in this parameter.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.tp_interval">tp_interval</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the distance to be maintained between the take-profit orders. This only applies when <code>maximum_tp_orders</code> is set to more than 1</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.tp_when_wallet_exposure_at_pct">tp_when_wallet_exposure_at_pct</span></code></td>
+          <td>
+                <code>Dict[float, StaticTpConfig]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>allows specifying a different TP distance based on the wallet exposure</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.tp_at_upnl_pct">tp_at_upnl_pct</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_enabled">trailing_enabled</span></code></td>
+          <td>
+                <code>bool = false</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>specifies if trailing is enabled or not</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_activation_upnl_pct">trailing_activation_upnl_pct</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>dictates at which upnl percentage the trailing TP is activaed</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_trigger_distance_upnl_pct">trailing_trigger_distance_upnl_pct</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_shift_threshold_upnl_pct">trailing_shift_threshold_upnl_pct</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_activation_distance_from_position_price">trailing_activation_distance_from_position_price</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>determines at which distance from the position price the trailing TP is activated</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_trigger_distance_from_current_price">trailing_trigger_distance_from_current_price</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the distance that the trailing TP initially has from the current price when activated</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_execution_distance_price_steps">trailing_execution_distance_price_steps</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>determines how many quantity steps from the trigger price the sell (long) / buy (short) price is</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.trailing_shift_threshold">trailing_shift_threshold</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the distance that the trailing TP maintains from the current price after activation</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.tp.allow_move_away">allow_move_away</span></code></td>
+          <td>
+                <code>bool = false</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a safety check to ensure a trailing TP order only moves in a more profitable direction; generally you won't need to set this unless you know
+                        what you're doing</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

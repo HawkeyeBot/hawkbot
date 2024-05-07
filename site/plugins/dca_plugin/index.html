@@ -1,0 +1,1038 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../tp_plugin/">
+      
+      
+        <link rel="next" href="../hedge_plugin/">
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.17">
+    
+    
+      
+        <title>DCA - Hawkbot</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.bcfcd587.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Hawkbot" class="md-header__button md-logo" aria-label="Hawkbot" data-md-component="logo">
+      
+  <img src="../../img/hawkbot_logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Hawkbot
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DCA
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Hawkbot" class="md-nav__button md-logo" aria-label="Hawkbot" data-md-component="logo">
+      
+  <img src="../../img/hawkbot_logo.svg" alt="logo">
+
+    </a>
+    Hawkbot
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Installation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Framework
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../modes/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Modes
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    UI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../exchanges/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exchanges
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Plugins
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            Plugins
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About plugins
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tp_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    DCA
+  </span>
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hedge_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hedge
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../multi_autoreduce_plugin/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multisymbol autoreduce
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../strategies/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Strategies
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Advanced
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../example_configs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Example configs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>DCA</h1>
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="hawkbot.plugins.dca"></a>
+  <div class="doc doc-contents first">
+  
+      <p>The DCA plugin is a flexible plugin that can be used to calculate the initial &amp; DCA orders forming a complete grid.
+The configuration has a wide number of parameters, providing a flexible way of specifying how a grid of orders should be constructed.</p>
+<p>Typically, a grid is calculated using an outer price marking the boundary of how wide the grid should be, followed by a calculation
+of actual orders that will be placed from the current price all the way to the outer price.</p>
+<p>The outer price can be determined in a number of ways; it can be configured as a specific price, a specific distance from the current price
+in %, or it can be calculated dynamically based on a support/resistance level. Each of these are configurable via the outer_ parameters.</p>
+<p>The prices of the relevant levels where orders can be placed are stored, as well as a list of the quantities to use. The quantities and
+prices are stored separately, to allow a dynamic combination of the two in more complex scenarios like partial take-profits and automatic
+refills during a position's lifecycle.</p>
+<p>The calculation of the prices to use is performed by algos. When using an outer price, the algo calculates one or more prices from which
+the DCA plugin will pick the outer price for the grid. After that, another algo is used to calculate the prices inside the grid where the
+actual orders are placed.</p>
+
+<details class="example" open>
+  <summary>Explicit outer price and linear grid</summary>
+  <p>The following snippet shows a DCA plugin configuration where an explicit outer price is used, a linear grid of 4 orders are placed
+to the outer price, and a ratio-power to calculate the quantities of each order::</p>
+<div class="codehilite"><pre><span></span><code>&quot;dca&quot;: {
+    &quot;algo&quot;: &quot;LINEAR&quot;,
+    &quot;ratio_power&quot; 1.4,
+    &quot;nr_clusters&quot;: 4,
+    &quot;outer_price&quot;: 69892
+}
+</code></pre></div>
+</details>
+<details class="example" open>
+  <summary>Desired position distance after DCA</summary>
+  <p>The following snippet shows a DCA plugin configuration where the quantity is governed by the desired position distance after each DCA.
+After a DCA is filled, the position distance will be 1% from where the last DCA was filled::</p>
+<div class="codehilite"><pre><span></span><code>&quot;dca&quot;: {
+    &quot;algo&quot;: &quot;LINEAR&quot;,
+    &quot;desired_position_distance_after_dca&quot;: 0.01,
+    &quot;nr_clusters&quot;: 4,
+    &quot;outer_price&quot;: 69892
+}
+</code></pre></div>
+</details>
+<details class="example" open>
+  <summary>Outer price distance at 4%</summary>
+  <p>The following snippet shows a DCA plugin configuration where the outer price is set to a specific distance of 4% from the current price::</p>
+<div class="codehilite"><pre><span></span><code>&quot;dca&quot;: {
+    &quot;algo&quot;: &quot;LINEAR&quot;,
+    &quot;ratio_power&quot; 1.4,
+    &quot;nr_clusters&quot;: 4,
+    &quot;outer_price_distance&quot;: 0.04
+}
+</code></pre></div>
+</details>
+<details class="example" open>
+  <summary>Outer price distance up to 4h support maintaining a minimum of 7%</summary>
+  <p>The following snippet shows a DCA plugin configuration where the outer price is set dynamically to a support on the 4H chart, using the
+last 12 months of data. It will ensure the outer price is at least 7% wide. Within the boundary of the determined outer price, a grid of
+orders will be placed using the LIN_PEAKS_TROUGHS_HIGHLOW algo, which uses a linspace-division, looking for peaks/troughs based on the last
+3 month's 1m data. The quantities are determined by the initial entry size, and a static quantity multiplier::</p>
+<div class="codehilite"><pre><span></span><code>&quot;dca&quot;: {
+    &quot;period&quot;: &quot;3M&quot;,
+    &quot;period_timeframe&quot;: &quot;1m&quot;,
+    &quot;algo&quot;: &quot;LIN_PEAKS_TROUGHS_HIGHLOW&quot;,
+    &quot;nr_clusters&quot;: 7,
+    &quot;outer_price_level_nr&quot;: 1,
+    &quot;outer_price_period&quot;: &quot;12M&quot;,
+    &quot;outer_price_timeframe&quot;: &quot;4H&quot;,
+    &quot;outer_price_nr_clusters&quot;: 10,
+    &quot;outer_price_algo&quot;: &quot;PEAKS_TROUGHS_HIGHLOW&quot;,
+    &quot;minimum_distance_to_outer_price&quot;: 0.07,
+    &quot;initial_entry_size&quot;: 0.01,
+    &quot;dca_quantity_multiplier&quot;: 1.2
+},
+</code></pre></div>
+</details>
+
+
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.enabled">enabled</span></code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>indicates if the plugin is enabled or not. If not specified, the value is true by default if there is a 'dca' block present in the strategy config, otherwise
+     the default is false</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.first_level_period">first_level_period</span></code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>specifies the period of candles to use for the first-level grid. For example, <code>15D</code> will make it inspect the last 15 days of candles</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.first_level_period_timeframe">first_level_period_timeframe</span></code></td>
+          <td>
+                <code>Timeframe</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the timeframe of the candles to use for the first-level grid. For example, <code>15m</code> will make it use 15-minute candles for the calculation</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.first_level_algo">first_level_algo</span></code></td>
+          <td>
+                <code>AlgoType</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the type of algo to calculate the prices for the first-level grid</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.first_level_nr_clusters">first_level_nr_clusters</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the nr of clusters (orders) to use for the first-level grid</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.period">period</span></code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>specifies the period of candles to use for the grid. For example, <code>15D</code> will make it inspect the last 15 days of candles</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.period_timeframe">period_timeframe</span></code></td>
+          <td>
+                <code>Timeframe</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the timeframe of the candles to use for the grid. For example, <code>15m</code> will make it use 15-minute candles for the calculation</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.algo">algo</span></code></td>
+          <td>
+                <code>AlgoType</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the type of algo to calculate the prices for the grid</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.period_start_date">period_start_date</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>can be used instead of <code>period</code>; setting this date instead allows using all the candles from the specified date up to the current date</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.nr_clusters">nr_clusters</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the nr of clusters (orders) to use for the grid</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price">outer_price</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a specific price to use as the outer price for the grid width</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_distance">outer_price_distance</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a specific distance from the current price for the grid width (for example, setting this at <code>0.052</code> will make the grid always 5.2% wide from
+                        the current price)</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_period">outer_price_period</span></code></td>
+          <td>
+                <code>str</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the period of candles to get when calculating a dynamic outer price</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_timeframe">outer_price_timeframe</span></code></td>
+          <td>
+                <code>Timeframe</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the timeframe of candles to get when calculating a dynamic outer price</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_period_start_date">outer_price_period_start_date</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>a specific starting date to get the candles from for calculating the outer price</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_algo">outer_price_algo</span></code></td>
+          <td>
+                <code>AlgoType</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the algo to use to calculate the outer price</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.minimum_distance_to_outer_price">minimum_distance_to_outer_price</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if specified, the price chosen from the calculated outer prices will be at least this far away; if none is found, no grid will be
+                                    placed</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.maximum_distance_from_outer_price">maximum_distance_from_outer_price</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>if specified, the price chosen from the calculated outer prices will be at most this far away; if none is found, no grid will be
+                                    placed</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_level_nr">outer_price_level_nr</span></code></td>
+          <td>
+                <code>int = 1</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>specifies which of the calculated prices is used for the outer price</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.outer_price_nr_clusters">outer_price_nr_clusters</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the nr of clusters (prices) to calculate from which the outer price can be selected</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.minimum_distance_between_levels">minimum_distance_between_levels</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.overlap">overlap</span></code></td>
+          <td>
+                <code>float = 0.001</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.quantity_unit_margin">quantity_unit_margin</span></code></td>
+          <td>
+                <code>int = 2</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.ratio_power">ratio_power</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>governs the quantity of each subsequent DCA order. Setting this to a higher value will bring the position price closer when a DCA is filled, at the
+                expense of the first orders being smaller</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.maximum_position_coin_size">maximum_position_coin_size</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.desired_position_distance_after_dca">desired_position_distance_after_dca</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.initial_entry_size">initial_entry_size</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>when using the <code>dca_quantity_multiplier</code> parameter, this needs to be set to determine the initial entry size. This is a ratio of the exposed
+                    balance, so for example setting this to 0.01 will make the first order 1% of the exposed balance</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.dca_quantity_multiplier">dca_quantity_multiplier</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the multiple with which each subsequence DCA order's size is multiplied</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.minimum_number_dca_quantities">minimum_number_dca_quantities</span></code></td>
+          <td>
+                <code>int = 15</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.override_insufficient_levels_available">override_insufficient_levels_available</span></code></td>
+          <td>
+                <code>bool = False</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.check_dca_against_wallet">check_dca_against_wallet</span></code></td>
+          <td>
+                <code>bool = true</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>TODO</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="hawkbot.plugins.dca.allow_add_new_smaller_dca">allow_add_new_smaller_dca</span></code></td>
+          <td>
+                <code>bool = true</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>by default, this value is set to true. As a result, when a (partial) TP occurs freeing up sufficient funds, a new DCA order can
+                                automatically be placed on top</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.1e8ae164.min.js"></script>
+      
+    
+  </body>
+</html>

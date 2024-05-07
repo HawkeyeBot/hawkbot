@@ -1,0 +1,55 @@
+{
+  "hedge_mode": true,
+  "multicore": false,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": [
+        "API3USDT"
+      ],
+      "exchange_leverage": 2,
+      "long": {
+        "enabled": true,
+        "strategy": "HedgingBigLongStrategy",
+        "wallet_exposure_ratio": 1,
+        "strategy_config": {
+          "entry_order_type": "LIMIT",
+          "limit_orders_reissue_threshold": 0.01,
+          "hedge_pct_of_full_long_quantity": 1,
+          "dca": {
+            "period": "1D",
+            "period_timeframe": "1m",
+            "algo": "LIN_PEAKS_TROUGHS_HIGHLOW",
+            "nr_clusters": 3,
+            "outer_price_distance": 0.015,
+            "ratio_power": 0.8
+          },
+          "tp": {
+            "minimum_tp": 0.0021,
+            "maximum_tp_orders": 1
+          },
+          "stoploss": {
+            "last_entry_trigger_distance": 0.01,
+            "post_stoploss_mode": "MANUAL",
+            "order_type": "STOP"
+          }
+        }
+      },
+      "short": {
+        "enabled": true,
+        "strategy": "HedgingShortStrategy",
+        "wallet_exposure_ratio": 1,
+        "strategy_config": {
+          "tp": {
+            "minimum_tp": 0.01,
+            "maximum_tp_orders": 1
+          },
+          "stoploss": {
+            "position_trigger_distance": 0.01,
+            "order_type": "STOP"
+          }
+        }
+      }
+    }
+  ]
+}

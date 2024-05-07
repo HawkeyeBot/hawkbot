@@ -1,0 +1,69 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "dynamic_entry": {
+    "max_trades": 1,
+    "long": {
+      "enabled": true,
+      "dynamic_entry_sweep_frequency": "10s",
+      "filters": [
+        {
+          "filter": "SymbolFilter",
+          "config": {
+            "whitelist": [
+              ".*USDT"
+            ],
+            "blacklist": [
+              "EURUSDT",
+              "GBPUSDT",
+              "JPYUSDT",
+              "USDUSDT",
+              "BUSDUSDT",
+              ".*DOWN/.*",
+              ".*UP/.*"
+            ]
+          }
+        },
+        {
+          "filter": "AgeFilter",
+          "config": {
+            "older_than": "1M"
+          }
+        },
+        {
+          "filter": "VolatilityFilter",
+          "config": {
+            "positive_threshold": 0.003,
+            "negative_threshold": -0.004,
+            "reference_timeframe": "1m",
+            "reference_candle_nr": 60
+          }
+        },
+        {
+          "filter": "LevelFilter",
+          "config": {
+            "period_timeframe": "1D",
+            "period": "24M",
+            "below_support_distance": 0.015,
+            "above_support_distance": 0.035
+          }
+        }
+      ],
+      "symbol_config_template": {
+        "long": {
+          "enabled": true,
+          "strategy": "TriggeredEntryLongStrategy",
+          "wallet_exposure_ratio": 0.5,
+          "strategy_config": {
+            "initial_cost": 0.0005,
+            "dca": {
+              "period": "3M",
+              "period_timeframe": "15m",
+              "algo": "LINEAR"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "ccxt_01": {
+    "exchange": "ccxt",
+    "exchange_type": "",
+    "key": "",
+    "secret": ""
+  },
+  "binance_01": {
+    "exchange": "binance",
+    "key": "",
+    "secret": ""
+  },
+  "bybit_01": {
+    "exchange": "bybit",
+    "key": "",
+    "secret": "",
+    "unified": false
+  },
+  "kite_01": {
+    "exchange": "kite",
+    "key": "",
+    "secret": "",
+    "user_id": "",
+    "password": "",
+    "totp_key": ""
+  },
+  "oanda_01": {
+    "exchange": "oanda",
+    "token": "",
+    "account-id": ""
+  },
+  "oanda-practice_01": {
+    "exchange": "oanda-practice",
+    "token": "",
+    "account-id": ""
+  }
+}

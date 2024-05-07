@@ -1,0 +1,113 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": "XRPUSDT",
+      "short": {
+        "enabled": false,
+        "mode": "NORMAL",
+        "strategy": "BasicShortStrategy",
+        "wallet_exposure_ratio": 0.25,
+        "strategy_config": {
+          "initial_cost": 0.01,
+          "tp": {
+            "minimum_tp": 0.004,
+            "maximum_tp_orders": 3,
+            "tp_interval": 0.005
+          },
+          "no_entry_above": 0.4,
+          "no_entry_below": 0.25,
+          "dca": {
+            "first_level_period": "1D",
+            "first_level_period_timeframe": "1m",
+            "first_level_algo": "PEAKS_TROUGHS_HIGHLOW",
+            "first_level_nr_clusters": 1,
+            "period": "24M",
+            "period_timeframe": "1D",
+            "algo": "PEAKS_TROUGHS",
+            "nr_clusters": 10,
+            "dca_quantity_multiplier": 2,
+            "grid_span": 0.3,
+            "minimum_number_of_available_dcas": 3,
+            "overlap": 0.001
+          },
+          "wiggle": {
+            "activate_on_stuck": true,
+            "decrease_size": 0.1,
+            "increase_size": 0.12,
+            "force_exit_wallet_exposure_distance": 0.1,
+            "period": "6M",
+            "timeframe": "5m",
+            "mode_after_closing": "NORMAL"
+          }
+        }
+      },
+      "long": {
+        "enabled": false,
+        "mode": "MANUAL",
+        "strategy": "BasicLongStrategy",
+        "wallet_exposure_ratio": 0.25,
+        "strategy_config": {
+          "initial_cost": 0.01,
+          "minimum_number_of_available_dcas": 2,
+          "tp": {
+            "minimum_tp": 0.004,
+            "maximum_tp_orders": 3,
+            "tp_interval": 0.005
+          },
+          "dca": {
+            "dca_quantity_multiplier": 1.5,
+            "period": "90D",
+            "period_timeframe": "1H",
+            "algo": "PEAKS_TROUGHS",
+            "nr_clusters": 20,
+            "grid_span": 0.45
+          },
+          "stoploss": {
+            "price": 1.16,
+            "distance": 0.002
+          },
+          "tp_refill": {
+            "enabled": true
+          }
+        }
+      }
+    },
+    {
+      "symbol": [
+        "TRXUSDT",
+        "XLMUSDT"
+      ],
+      "long": {
+        "enabled": false,
+        "strategy": "BasicLongStrategy",
+        "wallet_exposure": 500,
+        "strategy_config": {
+          "initial_cost": 0.001,
+          "tp": {
+            "minimum_tp": 0.003,
+            "maximum_tp_orders": 6,
+            "tp_interval": 0.003
+          },
+          "dca": {
+            "period": "12M",
+            "period_timeframe": "1D",
+            "outer_price_period": "24M",
+            "outer_price_timeframe": "1D",
+            "minimum_distance_to_outer_price": 0.2,
+            "maximum_distance_from_outer_price": 0.5,
+            "outer_price_level_nr": 2,
+            "nr_clusters": 20,
+            "overlap": 0.003
+          },
+          "stoploss": {
+            "price": 1.16,
+            "distance": 0.002,
+            "sell_distance": 0.002
+          }
+        }
+      }
+    }
+  ]
+}

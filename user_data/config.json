@@ -1,0 +1,26 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": [
+        "XRPUSDT"
+      ],
+      "exchange_leverage": 1,
+      "long": {
+        "enabled": true,
+        "strategy": "Strategy",
+        "wallet_exposure_ratio": 1,
+        "strategy_config": {
+        }
+      },
+      "short": {
+        "enabled": true,
+        "strategy": "Strategy",
+        "wallet_exposure_ratio": 1,
+        "strategy_config": {
+        }
+      }
+    }
+  ]
+}

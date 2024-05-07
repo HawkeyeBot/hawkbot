@@ -1,0 +1,125 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "dynamic_entry": {
+    "max_trades": 1,
+    "long": {
+      "enabled": true,
+      "dynamic_entry_sweep_frequency": "90s",
+      "filters": [
+        {
+          "filter": "SymbolFilter",
+          "config": {
+            "whitelist": [
+              ".*USDT"
+            ],
+            "blacklist": [
+              "EURUSDT",
+              "GBPUSDT",
+              "JPYUSDT",
+              "USDUSDT",
+              "BTCSTUSDT",
+              "BUSDUSDT",
+              ".*DOWN/.*",
+              ".*UP/.*"
+            ]
+          }
+        },
+        {
+          "filter": "AgeFilter",
+          "enabled": true,
+          "config": {
+            "older_than": "1M",
+            "newer_than": "60M"
+          }
+        },
+        {
+          "filter": "Last24hVolumeFilter",
+          "config": {
+            "sort": "desc",
+            "top": 50
+          }
+        },
+        {
+          "filter": "MinNotionalFilter",
+          "config": {
+            "less_than": 10,
+            "more_than": 4
+          }
+        },
+        {
+          "filter": "MaxQuantityFilter",
+          "config": {
+            "wallet_exposure_ratio": 0.5,
+            "initial_cost": 0.001,
+            "dca_assumed_max_distance": 0.2,
+            "dca_quantity_multiplier": 2
+          }
+        },
+        {
+          "filter": "CandleVolumeFilter",
+          "config": {
+            "minimum_volume_M": 100,
+            "timeframe": "ONE_DAY",
+            "number_candles": 30
+          }
+        },
+        {
+          "filter": "VolatilityFilter",
+          "config": {
+            "positive_threshold": 0.003,
+            "negative_threshold": -0.004,
+            "reference_timeframe": "1m",
+            "reference_candle_nr": 60
+          }
+        },
+        {
+          "filter": "LevelFilter",
+          "config": {
+            "period": "24M",
+            "period_timeframe": "1D",
+            "below_support_distance": 0.015,
+            "above_support_distance": 0.035,
+            "outer_price_period": "24M",
+            "outer_price_timeframe": "1D",
+            "minimum_distance_to_outer_price": 0.2,
+            "maximum_distance_from_outer_price": 0.5,
+            "outer_price_level_nr": 3,
+            "nr_clusters": 5,
+            "overlap": 0.001,
+            "minimum_number_of_available_dcas": 4
+          }
+        }
+      ],
+      "symbol_config_template": {
+        "long": {
+          "enabled": true,
+          "strategy": "TriggeredEntryLongStrategy",
+          "wallet_exposure_ratio": 0.5,
+          "strategy_config": {
+            "initial_cost": 0.0005,
+            "minimum_number_of_available_dcas": 4
+            "tp": {
+              "minimum_tp": 0.005,
+              "maximum_tp_orders": 1,
+              "tp_interval": 0.004
+            },
+            "dca": {
+              "period": "3M",
+              "period_timeframe": "15m",
+              "algo": "LINEAR",
+              "outer_price_period": "24M",
+              "outer_price_timeframe": "1D",
+              "outer_price_algo": "PEAKS_TROUGHS",
+              "minimum_distance_to_outer_price": 0.2,
+              "maximum_distance_from_outer_price": 0.5,
+              "outer_price_level_nr": 3,
+              "nr_clusters": 5,
+              "overlap": 0.001,
+            }
+          }
+        }
+      }
+    }
+  }
+}

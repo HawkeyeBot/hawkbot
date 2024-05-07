@@ -1,0 +1,56 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  complete:
+    format: '%(processName)s - %(asctime)s - %(threadName)s - %(name)s - %(levelname)s - %(message)s'
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stderr
+  file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: complete
+    filename: logs/hawkbot.log
+    maxBytes: 10485760 # 10MB
+    backupCount: 10
+    encoding: utf8
+  memory_file_handler:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: complete
+    filename: logs/memory.log
+    maxBytes: 10485760 # 10MB
+    backupCount: 10
+    encoding: utf8
+loggers:
+  hawkbot:
+    level: INFO
+    handlers: [ console, file_handler ]
+    propagate: no
+  hawkbot.core.health_monitor:
+    level: INFO
+    handlers: [ memory_file_handler ]
+    propagate: no
+  hawkbot.logging.logging_globals:
+    level: INFO
+    handlers: [ console, memory_file_handler ]
+    propagate: no
+  orderer:
+    level: INFO
+    handlers: [ console, file_handler ]
+    propagate: no
+  user_data:
+    level: INFO
+    handlers: [ console, file_handler ]
+    propagate: no
+  werkzeug:
+    level: WARN
+    handlers: [ console, file_handler ]
+    propagate: no
+root:
+  level: INFO
+  handlers: [ console, file_handler ]

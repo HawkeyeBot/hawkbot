@@ -1,0 +1,645 @@
+{
+  "exchange": "binance",
+  "multicore": true,
+  "use_embedded_redis": true,
+  "pidfile_dir": "<tempfile.gettempdir>",
+  "plugin_paths": [
+    "user_data/plugins",
+    "hawkbot/plugins"
+  ],
+  "filter_paths": [
+    "user_data/filters",
+    "hawkbot/filters"
+  ],
+  "plugins": {
+  },
+  "exchange_config": {
+    // only for binance-spot
+    "quote_asset": "<symbol>",
+    // only for binance-futures
+    "batch_order_creation": true,
+    // only for binance-futures
+    "persist_orderbook": false,
+    // only for binance-futures
+    "persisted_orderbook_path": "backtests/data/binance"
+  },
+  "strategy_paths": [
+    "user_data/strategies/",
+    "hawkbot/strategies/"
+  ],
+  "dynamic_entry": {
+    "max_trades": 1,
+    "enabled": true,
+    "dynamic_entry_sweep_frequency": "",
+    "filters": [
+      {
+        "filter": "SymbolFilter",
+        "config": {
+          "whitelist": [],
+          "blacklist": []
+        }
+      },
+      {
+        "filter": "AgeFilter",
+        "enabled": true,
+        "config": {
+          "older_than": "",
+          "newer_than": ""
+        }
+      },
+      {
+        "filter": "Last24hVolumeFilter",
+        "config": {
+          "sort": "",
+          "top":
+        }
+      },
+      {
+        "filter": "MinNotionalFilter",
+        "config": {
+          "less_than":,
+          "more_than":
+        }
+      },
+      {
+        "filter": "MaxQuantityFilter",
+        "config": {
+          "wallet_exposure_ratio":,
+          "initial_cost":,
+          "dca_assumed_max_distance":,
+          "dca_quantity_multiplier":
+        }
+      },
+      {
+        "filter": "CandleVolumeFilter",
+        "config": {
+          "minimum_volume_M":,
+          "timeframe": "",
+          "number_candles":
+        }
+      },
+      {
+        "filter": "VolatilityFilter",
+        "config": {
+          "positive_threshold":,
+          "negative_threshold":,
+          "reference_timeframe": "",
+          "reference_candle_nr":
+        }
+      },
+      {
+        "filter": "LevelFilter",
+        "config": {
+          "period": "",
+          "period_timeframe": "",
+          "period_start_date":,
+          "below_support_distance":,
+          "above_support_distance":,
+          "below_resistance_distance":,
+          "above_resistance_distance":,
+          "outer_price":,
+          "outer_price_period": "",
+          "outer_price_period_start_date":,
+          "outer_price_timeframe": "",
+          "outer_price_nr_clusters": 10,
+          "minimum_distance_to_outer_price":,
+          "maximum_distance_from_outer_price":,
+          "outer_price_level_nr": 1,
+          "nr_clusters": 10,
+          "minimum_number_of_available_dcas": 3,
+          "grid_span": 1,
+          "overlap": 0.001
+        }
+      },
+      {
+        "filter": "RandomizerFilter"
+      },
+      {
+        "filter": "SubListFilter",
+        "config": {
+          "size": 5
+        }
+      }
+    ],
+    "symbol_config_template": {
+      "exchange_leverage": "MAX",
+      "margin_type": "CROSSED",
+      "check_dca_against_wallet": true,
+      "long": {
+        "enabled": false,
+        "wallet_exposure_ratio":,
+        "wallet_exposure":,
+        "tick_execution_interval_ms": 5000,
+        "pulse_interval_ms": 1000,
+        "strategy": "",
+        "mode": "<mode>",
+        "cancel_duplicate_orders": true,
+        "strategy_config": {
+          // config options for "TriggeredEntryLongStrategy"
+          "tp_refill_range":,
+          "initial_cost":,
+          "override_insufficient_supports_available": false,
+          "minimum_number_dca_quantities": 15,
+          "no_entry_above":,
+          "no_entry_below":,
+          "no_entry_within_resistance_distance":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_period":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_timeframe":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_algo":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_nr_clusters":,
+          // BigLongStrategy only
+          "mode_on_price_outside_boundaries":,
+          "cancel_orders_on_position_close": true,
+          "minimum_number_of_available_dcas": 3,
+          "tp": {
+            "enabled": true,
+            "minimum_tp":,
+            "maximum_tp_orders": 1,
+            "tp_interval":,
+            "trailing_enabled": false,
+            "tp_at_upnl_pct":,
+            "trailing_activation_upnl_pct":,
+            "trailing_trigger_distance_upnl_pct":,
+            "trailing_shift_threshold_upnl_pct":,
+            "trailing_activation_distance_from_position_price":,
+            "trailing_trigger_distance_from_current_price":,
+            "trailing_execution_distance_price_steps":,
+            "trailing_shift_threshold":,
+            "tp_when_wallet_exposure_at_pct": {
+              "0": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              },
+              "100": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              }
+            },
+            "allow_move_away": false
+          },
+          "obtp": {
+            "minimum_tp_distance": 0.00015,
+            "number_tp_orders": 1,
+            "depth": 100,
+            "nr_bins": 25,
+            "order_repost_beyond_threshold": 0.001
+          },
+          "dca": {
+            "enabled": true,
+            "first_level_period":,
+            "first_level_period_timeframe":,
+            "first_level_algo":,
+            "first_level_nr_clusters":,
+            "maximum_position_coin_size":,
+            "dca_quantity_multiplier":,
+            "period": "",
+            "period_timeframe": "",
+            "period_start_date":,
+            "algo":,
+            "outer_price":,
+            "outer_price_distance":,
+            "outer_price_period": "",
+            "outer_price_period_start_date":,
+            "outer_price_timeframe": "",
+            "outer_price_nr_clusters": 10,
+            "outer_price_algo":,
+            "minimum_distance_to_outer_price":,
+            "maximum_distance_from_outer_price":,
+            "outer_price_level_nr": 1,
+            "nr_clusters": 10,
+            "grid_span": 1,
+            "overlap": 0.001,
+            "quantity_unit_margin": 2,
+            "ratio_power":,
+            "allow_add_new_smaller_dca": true
+          },
+          "stoploss": {
+            "enabled": true,
+            "upnl_exposed_wallet_threshold":,
+            "upnl_total_wallet_threshold":,
+            "stoploss_price":,
+            "position_trigger_distance":,
+            "last_entry_trigger_distance":,
+            "wallet_exposure_threshold",
+            "relative_wallet_exposure_threshold":,
+            "sell_distance": 0.002,
+            "grid_range":,
+            "nr_orders": 1,
+            "post_stoploss_mode":,
+            "custom_trigger_price_enabled": false,
+            "order_type":,
+            "trailing_enabled": false,
+            "trailing_distance":
+          },
+          "tp_refill": {
+            "enabled": false
+          },
+          "wiggle": {
+            "enabled": true,
+            "activate_on_stuck": false,
+            "decrease_size":,
+            "decrease_coin_size":,
+            "increase_size",
+            "increase_coin_size",
+            "force_exit_position_price_distance":,
+            "force_exit_position_quantity_below":,
+            "force_exit_position_wallet_exposure_distance_below":,
+            "mode_after_closing":,
+            "tp_on_profit": true,
+            "period":,
+            "timeframe":,
+            "algo": "PEAKS_TROUGHS_HIGHLOW",
+            "wiggle_on_tick": true
+          },
+          "gtfo": {
+            "enabled": false,
+            "upnl_absolute_loss_threshold":,
+            // absolute value
+            "upnl_pct_threshold":,
+            // exchange_leverage based upnl pct
+            "upnl_total_wallet_threshold":,
+            // ratio of total wallet balance
+            "upnl_exposed_wallet_threshold":,
+            // ratio of exposed balance
+            "order_type":,
+            "post_gtfo_mode":,
+            "position_reduce_order_size",
+            "position_size_based_threshold": {
+              "initial_position_size_multipliedby_trigger":,
+              "upnl_pct_threshold":
+            },
+            "gtfo_execution_interval_ms": 2000
+          }
+        }
+      }
+    }
+  },
+  "symbol_configs": [
+    {
+      // individual symbol or list of symbols
+      "symbol":,
+      "exchange_leverage": "MAX",
+      "margin_type": "CROSSED",
+      "cancel_duplicate_orders": true,
+      "check_dca_against_wallet": true,
+      "long": {
+        "enabled": false,
+        "wallet_exposure_ratio":,
+        "wallet_exposure":,
+        "tick_execution_interval_ms": 5000,
+        "pulse_interval": 1000,
+        "strategy": "",
+        "mode": "<mode>",
+        "cancel_duplicate_orders": true,
+        "strategy_config": {
+          // config options for "BasicLongStrategy"
+          "initial_cost":,
+          "override_insufficient_supports_available": false,
+          "minimum_number_dca_quantities": 15,
+          "no_entry_above":,
+          "no_entry_below":,
+          "no_entry_within_resistance_distance":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_period":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_timeframe":,
+          // BigLongStrategy only
+          "no_entry_within_resistance_algo":,
+          // BigLongStrategy only
+          "mode_on_price_outside_boundaries":,
+          "cancel_orders_on_position_close": true,
+          "minimum_number_of_available_dcas": 3,
+          "tp": {
+            "enabled": true,
+            "minimum_tp":,
+            "maximum_tp_orders": 1,
+            "tp_interval":,
+            "trailing_enabled": false,
+            "trailing_activation_upnl_pct":,
+            "tp_at_upnl_pct":,
+            "trailing_trigger_distance_upnl_pct":,
+            "trailing_shift_threshold_upnl_pct":,
+            "trailing_activation_distance_from_position_price":,
+            "trailing_trigger_distance_from_current_price":,
+            "trailing_execution_distance_price_steps":,
+            "trailing_shift_threshold":,
+            "tp_when_wallet_exposure_at_pct": {
+              "0": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              },
+              "100": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              }
+            },
+            "allow_move_away": false
+          },
+          "obtp": {
+            "minimum_tp_distance": 0.00015,
+            "number_tp_orders": 1,
+            "depth": 100,
+            "nr_bins": 25,
+            "order_repost_beyond_threshold": 0.001
+          },
+          "dca": {
+            "enabled": true,
+            "first_level_period":,
+            "first_level_period_timeframe":,
+            "first_level_algo":,
+            "first_level_nr_clusters":,
+            "maximum_position_coin_size":,
+            "dca_quantity_multiplier":,
+            "period": "",
+            "period_start_date":,
+            "period_timeframe": "",
+            "algo":,
+            "outer_price":,
+            "outer_price_distance":,
+            "outer_price_period": "",
+            "outer_price_period_start_date":,
+            "outer_price_timeframe": "",
+            "outer_price_nr_clusters": 10,
+            "outer_price_algo":,
+            "minimum_distance_to_outer_price":,
+            "maximum_distance_from_outer_price":,
+            "outer_price_level_nr": 1,
+            "nr_clusters": 10,
+            "grid_span": 1,
+            "overlap": 0.001,
+            "quantity_unit_margin": 2,
+            "ratio_power":,
+            "allow_add_new_smaller_dca": true
+          },
+          "stoploss": {
+            "enabled": true,
+            "upnl_exposed_wallet_threshold":,
+            "upnl_total_wallet_threshold":,
+            "stoploss_price":,
+            "position_trigger_distance":,
+            "last_entry_trigger_distance":,
+            "wallet_exposure_threshold",
+            "relative_wallet_exposure_threshold":,
+            "sell_distance": 0.002,
+            "grid_range":,
+            "nr_orders": 1,
+            "post_stoploss_mode":,
+            "custom_trigger_price_enabled": false,
+            "order_type":,
+            "trailing_enabled": false,
+            "trailing_distance":
+          },
+          "tp_refill": {
+            "enabled": false
+          },
+          "wiggle": {
+            "enabled": true,
+            "activate_on_stuck": false,
+            "decrease_size":,
+            "decrease_coin_size":,
+            "increase_size",
+            "increase_coin_size":,
+            "force_exit_position_price_distance":,
+            "force_exit_position_quantity_below":,
+            "force_exit_position_wallet_exposure_distance_below":,
+            "mode_after_closing":,
+            "tp_on_profit": true,
+            "period":,
+            "timeframe":,
+            "algo": "PEAKS_TROUGHS_HIGHLOW",
+            "wiggle_on_tick": true
+          },
+          "gtfo": {
+            "enabled": false,
+            "upnl_absolute_loss_threshold":,
+            // absolute value
+            "upnl_pct_threshold":,
+            // exchange_leverage based upnl pct
+            "upnl_total_wallet_threshold":,
+            // ratio of total wallet balance
+            "upnl_exposed_wallet_threshold":,
+            // ratio of exposed balance
+            "order_type":,
+            "post_gtfo_mode":,
+            "position_reduce_order_size",
+            "position_size_based_threshold": {
+              "initial_position_size_multipliedby_trigger":,
+              "upnl_pct_threshold":
+            },
+            "gtfo_execution_interval_ms": 2000
+          }
+        }
+      },
+      "short": {
+        "enabled": false,
+        "wallet_exposure_ratio":,
+        "wallet_exposure":,
+        "tick_execution_interval_ms": 5000,
+        "pulse_interval": 1000,
+        "strategy": "",
+        "mode": "<mode>",
+        "cancel_duplicate_orders": true,
+        "strategy_config": {
+          // config options for "BasicShortStrategy"
+          "initial_cost":,
+          "override_insufficient_supports_available": false,
+          "minimum_number_dca_quantities": 15,
+          "tp": {
+            "enabled": true,
+            "minimum_tp":,
+            "maximum_tp_orders": 1,
+            "tp_interval":,
+            "trailing_enabled": false,
+            "tp_at_upnl_pct":,
+            "trailing_activation_upnl_pct":,
+            "trailing_trigger_distance_upnl_pct":,
+            "trailing_shift_threshold_upnl_pct":,
+            "trailing_activation_distance_from_position_price":,
+            "trailing_trigger_distance_from_current_price":,
+            "trailing_execution_distance_price_steps":,
+            "trailing_shift_threshold":,
+            "tp_when_wallet_exposure_at_pct": {
+              "0": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              },
+              "100": {
+                "minimum_tp":,
+                "maximum_tp_orders": ,
+                "tp_interval":
+              }
+            },
+            "allow_move_away": false
+          },
+          "obtp": {
+            "minimum_tp_distance": 0.00015,
+            "number_tp_orders": 1,
+            "depth": 100,
+            "nr_bins": 25,
+            "order_repost_beyond_threshold": 0.001
+          },
+          "no_entry_above":,
+          "no_entry_below":,
+          "no_entry_within_support_distance":,
+          "no_entry_within_support_period":,
+          "no_entry_within_support_timeframe":,
+          "no_entry_within_support_algo":,
+          "mode_on_price_outside_boundaries":,
+          "cancel_orders_on_position_close": true,
+          "minimum_number_of_available_dcas": 3,
+          "dca": {
+            "enabled": true,
+            "first_level_period":,
+            "first_level_period_timeframe":,
+            "first_level_algo":,
+            "first_level_nr_clusters":,
+            "maximum_position_coin_size":,
+            "dca_quantity_multiplier":,
+            "period": "",
+            "period_start_date":,
+            "period_timeframe": "",
+            "algo":,
+            "outer_price":,
+            "outer_price_distance":,
+            "outer_price_period": "",
+            "outer_price_period_start_date":,
+            "outer_price_timeframe": "",
+            "outer_price_nr_clusters": 10,
+            "outer_price_algo":,
+            "minimum_distance_to_outer_price":,
+            "maximum_distance_from_outer_price":,
+            "outer_price_level_nr": 1,
+            "nr_clusters": 10,
+            "grid_span": 1,
+            "overlap": 0.001,
+            "quantity_unit_margin": 2,
+            "ratio_power":,
+            "allow_add_new_smaller_dca": true
+          },
+          "stoploss": {
+            "enabled": true,
+            "upnl_exposed_wallet_threshold":,
+            "upnl_total_wallet_threshold":,
+            "stoploss_price":,
+            "position_trigger_distance":,
+            "last_entry_trigger_distance":,
+            "wallet_exposure_threshold":,
+            "relative_wallet_exposure_threshold":,
+            "sell_distance": 0.002,
+            "grid_range":,
+            "nr_orders": 1,
+            "post_stoploss_mode":,
+            "custom_trigger_price_enabled": false,
+            "order_type":,
+            "trailing_enabled": false,
+            "trailing_distance":
+          },
+          "tp_refill": {
+            "enabled": false
+          },
+          "wiggle": {
+            "enabled": true,
+            "activate_on_stuck": false,
+            "decrease_size":,
+            "decrease_coin_size":,
+            "increase_size",
+            "increase_coin_size":,
+            "force_exit_position_price_distance":,
+            "force_exit_position_quantity_below":,
+            "force_exit_position_wallet_exposure_distance_below":,
+            "mode_after_closing":,
+            "tp_on_profit": true,
+            "period":,
+            "timeframe":,
+            "algo": "PEAKS_TROUGHS_HIGHLOW",
+            "wiggle_on_tick": true
+          },
+          "gtfo": {
+            "enabled": false,
+            "upnl_absolute_loss_threshold":,
+            // absolute value
+            "upnl_pct_threshold":,
+            // exchange_leverage based upnl pct
+            "upnl_total_wallet_threshold":,
+            // ratio of total wallet balance
+            "upnl_exposed_wallet_threshold":,
+            // ratio of exposed balance
+            "order_type":,
+            "post_gtfo_mode":,
+            "position_reduce_order_size",
+            "position_size_based_threshold": {
+              "initial_position_size_multipliedby_trigger":,
+              "upnl_pct_threshold":
+            },
+            "gtfo_execution_interval_ms": 2000
+          }
+        }
+      }
+    }
+  ],
+  "candlestore_used": true,
+  "rate_limit_download_delay": 0.1,
+  "candle_purge_expired": false,
+  "candle_database_path": "data/candle_cache.db",
+  "tick_expiry_ms": 5000,
+  "tickstore_used": true,
+  "tickstore_interval_offset_ms": 10000,
+  "tickstore_persist_new_ticks": true,
+  "tick_database_path": "data/tick_cache.db",
+  "execute_expired_ticks": false,
+  "tick_triggers": false,
+  "persisted_tick_purge_expiry_time": "5m",
+  "persisted_tick_purge_interval": "30s",
+  "candle_store_check_s": 10,
+  "orderbook_check_s": 1,
+  "orderbook_used": true,
+  "cancel_all_orders_on_change": false,
+  "mode_check_interval_s": 1,
+  "monitor_enabled": true,
+  "monitor_interval_s": 5,
+  "monitor_startup_delay_s": 5,
+  "monitor_heartbeat_interval_s": 60,
+  "state_synchronize_interval_s": 30,
+  "state_synchronize_orders": true,
+  "backtest": false,
+  "rate_limit_threshold": 1100,
+  "ban_check_interval_ms": 10000,
+  "api_weight_log_interval_ms": 5000,
+  "log_api_weight": false,
+  "initial_entry_search_attempts": 10,
+  "initial_entry_ignore_not_found": false,
+  "initial_entry_block_ms": 25000,
+  "mode_file": "data/mode.json",
+  "modes": {
+    "<symbol>": {
+      "long": "<mode>"
+    }
+  },
+  "set_leverage_on_startup": true,
+  "set_hedge_mode_on_startup": true,
+  "set_margin_type_on_startup": true,
+  "hedge_mode":,
+  "override_max_exposure_ratio_check": false,
+  "strategy_executor_shutdown_iterations": 3,
+  "block_activation_until_ws_data_received": true,
+  "persist_mode_changes": true,
+  "liquidation_used": false,
+  "persisted_liquidation_purge_expiry_time": "5m",
+  "persisted_liquidation_purge_interval": "30s",
+  "liquidation_database_path": "data/liquidation_cache.db",
+  "liquidation_repository_in_memory": false,
+  "write_live_trades_csv": true,
+  "websocket_ping_interval_s": 20,
+  "redis_port": 6379,
+  "persistent_redis_path": "data/persistent_redis.db",
+  "aggtrades_used": false
+}

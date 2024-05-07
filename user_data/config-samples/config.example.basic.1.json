@@ -1,0 +1,34 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": "TRXUSDT",
+      "long": {
+        "enabled": true,
+        "strategy": "BasicLongStrategy",
+        "wallet_exposure_ratio": 0.25,
+        "strategy_config": {
+          "initial_cost": 0.01,
+          "dca": {
+            "period_timeframe": "1D",
+            "period": "24M",
+            "algo": "LINEAR"
+          },
+          "tp_refill": {
+            "enabled": true
+          },
+          "wiggle": {
+            "activate_on_stuck": true,
+            "decrease_size": 0.1,
+            "increase_size": 0.12,
+            "force_exit_wallet_exposure_distance": 0.1,
+            "period": "6M",
+            "timeframe": "5m",
+            "mode_after_closing": "NORMAL"
+          }
+        }
+      }
+    }
+  ]
+}

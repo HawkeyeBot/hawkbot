@@ -1,0 +1,36 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": "ADAUSDT",
+      "long": {
+        "enabled": true,
+        "strategy": "BigLongStrategy",
+        "wallet_exposure_ratio": 1,
+        "strategy_config": {
+          "entry_order_type": "LIMIT",
+          "limit_orders_reissue_threshold": 0.001,
+          "dca": {
+            "period": "3M",
+            "period_timeframe": "1H",
+            "algo": "LINEAR",
+            "nr_clusters": 20,
+            "outer_price_period": "3M",
+            "outer_price_timeframe": "1H",
+            "outer_price_nr_clusters": 5,
+            "outer_price_algo": "PEAKS_TROUGHS",
+            "maximum_position_coin_size": 5000,
+            "minimum_distance_to_outer_price": 0.03,
+            "ratio_power": 0.5
+          },
+          "stoploss": {
+            "distance": 0.002,
+            "grid_range": 0.03,
+            "nr_orders": 5
+          }
+        }
+      }
+    }
+  ]
+}

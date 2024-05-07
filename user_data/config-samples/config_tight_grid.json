@@ -1,0 +1,63 @@
+{
+  "hedge_mode": true,
+  "persisted_tick_purge_expiry_time": "5m",
+  "symbol_configs": [
+    {
+      "symbol": [
+        "ADABUSD"
+      ],
+      "long": {
+        "enabled": true,
+        "strategy": "BigLongStrategy",
+        "wallet_exposure_ratio": 0.5,
+        "strategy_config": {
+          "entry_order_type": "LIMIT",
+          "limit_orders_reissue_threshold": 0.001,
+          "dca": {
+            "period": "3M",
+            "period_timeframe": "1m",
+            "algo": "LIN_PEAKS_TROUGHS_HIGHLOW",
+            "nr_clusters": 7,
+            "outer_price_distance": 0.03,
+            "ratio_power": 0.7
+          },
+          "tp": {
+            "minimum_tp": 0.002,
+            "maximum_tp_orders": 1,
+            "tp_interval": 0.0015
+          },
+          "stoploss": {
+            "upnl_exposed_wallet_threshold": 0.028,
+            "post_stoploss_mode": "GRACEFUL_STOP"
+          }
+        }
+      },
+      "short": {
+        "enabled": true,
+        "strategy": "BigShortStrategy",
+        "wallet_exposure_ratio": 0.5,
+        "strategy_config": {
+          "entry_order_type": "LIMIT",
+          "limit_orders_reissue_threshold": 0.001,
+          "dca": {
+            "period": "3M",
+            "period_timeframe": "1m",
+            "algo": "LIN_PEAKS_TROUGHS_HIGHLOW",
+            "nr_clusters": 7,
+            "outer_price_distance": 0.03,
+            "ratio_power": 0.7
+          },
+          "tp": {
+            "minimum_tp": 0.002,
+            "maximum_tp_orders": 1,
+            "tp_interval": 0.0015
+          },
+          "stoploss": {
+            "upnl_exposed_wallet_threshold": 0.02,
+            "post_stoploss_mode": "GRACEFUL_STOP"
+          }
+        }
+      }
+    }
+  ]
+}

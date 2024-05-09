@@ -527,7 +527,6 @@ can increase the <code>wallet_exposure_ratio</code> to gain more profits, but th
 the MultiAutoreduceplugin to the configuration so it automatically starts reducing stuck positions.</p>
 <details class="note">
 <summary>config.json</summary>
-</details>
 <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;persisted_tick_purge_expiry_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5m&quot;</span><span class="p">,</span>
@@ -602,6 +601,7 @@ the MultiAutoreduceplugin to the configuration so it automatically starts reduci
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 </code></pre></div>
+</details>
 <h2 id="tight-manual-grid">Tight manual grid</h2>
 <p>The configuration below shows a setup that trades much more aggressively using a fixed-distance grid trading both long &amp; short. The stoploss is disabled
 in this configuration, but can simply be enabled by changing the <code>enabled</code> field for the stoploss config to <code>true</code>.
@@ -609,7 +609,6 @@ The configuration trades using a grid of 5 orders, but has an aggressive <code>r
 This configuration is a good starting point if you want to run grids specific to the momentum of a coin.</p>
 <details class="note">
 <summary>config.json</summary>
-</details>
 <div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;multicore&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
@@ -684,18 +683,18 @@ This configuration is a good starting point if you want to run grids specific to
 <span class="w">      </span><span class="p">]</span>
 <span class="w">    </span><span class="p">}</span>
 </code></pre></div>
+</details>
 <h2 id="manual-scalping-aid">Manual scalping aid</h2>
 <p>The configuration below shows an example configuration that can be used as a manual scalping aid on long positions. There are several keys mapped to actions as can be seen in the config.
 Next to placing a grid upon pushing the corresponding button (<code>b</code> in the example below), it will also automatically maintain a stoploss-order to enforce a maximum loss budget (set at 1% of the 
 exposed balance in the example below). Upon each order fill, it will automatically move the stoploss to enforce this loss budget. Lastly, it has a number of TP distances that can be changed using 
 the 1-9 keys, and a trailing stoploss that is activated once the position is ensured to be in profit.</p>
-<blockquote>
-<p>[!CAUTION]
-Please be aware this strategy will capture your keyboard output to perform it\'s tasks, so make sure you\'re not doing anything else on your machine when using this</p>
-</blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Please be aware this strategy will capture your keyboard output to perform it's tasks, so make sure you're not doing anything else on your machine when using this</p>
+</div>
 <details class="note">
 <summary>config.json</summary>
-</details>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;multicore&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
@@ -755,6 +754,7 @@ Please be aware this strategy will capture your keyboard output to perform it\'s
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
+</details>
 
 
 

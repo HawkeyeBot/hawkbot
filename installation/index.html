@@ -550,7 +550,29 @@ try to load a file located at <code>user_data/config.json</code>. This location 
 </code></pre></div>
 
 <h2 id="license-file">License file</h2>
-<p>When starting the bot, you will need to have a license file. You can get one by joining the <a href="https://discord.gg/45aRPz3QmQ">Discord - Hawkbot</a> server.</p>
+<p>When starting the bot, you will need to have a license file. You can get one by joining the <a href="https://discord.gg/45aRPz3QmQ">Discord - Hawkbot</a> server.
+Once you have obtained a license key, you will need to put it in the root folder of the Hawkbot repository, and rename it to <code>pyarmor.rkey</code></p>
+<h2 id="using-docker">Using Docker</h2>
+<p>In case you want to run Hawkbot in a docker container, there is a Dockerfile provided in the repository root for convenience.</p>
+<h3 id="prerequisites">Prerequisites:</h3>
+<ul>
+<li>Docker 19.03.0+</li>
+<li>Docker-compose 1.25.5+</li>
+</ul>
+<h3 id="steps">Steps:</h3>
+<ol>
+<li>Clone the repository and change directory to the root of the repository.</li>
+<li>Configure account's configurations file and place it in <code>./configs/account.json</code>.</li>
+<li>Configure the bot's configurations file and place it in <code>./configs/config.json</code>.</li>
+<li>Place license file in <code>./pyarmor.rkey</code>.</li>
+<li>Change the account name <code>bybit_01</code> in the <code>docker-compose.yml</code> file (last line).</li>
+<li>Run <code>docker-compose up -d --build</code> to start the bot.</li>
+<li>Additional command line arguments can be added to the bot's command line using the <code>PARAMS</code> environment variable.</li>
+<li>Run <code>docker-compose logs -f</code> to view the logs.</li>
+<li>Use <code>Ctrl+C</code> to exit.</li>
+<li>Use <code>--tail &lt;number&gt;</code> to view previous lines.</li>
+<li>Run <code>docker-compose down</code> to stop the bot.</li>
+</ol>
 
 
 

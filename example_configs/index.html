@@ -527,81 +527,81 @@ can increase the <code>wallet_exposure_ratio</code> to gain more profits, but th
 the MultiAutoreduceplugin to the configuration so it automatically starts reducing stuck positions.</p>
 <details class="note">
 <summary>config.json</summary>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;persisted_tick_purge_expiry_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5m&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;symbol_configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;symbol&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;CHZUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;DOTUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;DOGEUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;AVAXUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ETCUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;LINKUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;ADAUSDT&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="s2">&quot;XRPUSDT&quot;</span>
-<span class="w">      </span><span class="p">],</span>
-<span class="w">      </span><span class="nt">&quot;exchange_leverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;long&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigLongStrategy&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.125</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;cancel_orders_on_position_close&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3M&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIN_PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_level_nr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12M&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4H&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;minimum_distance_to_outer_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.07</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span>
-<span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0028</span>
-<span class="w">          </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;short&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigShortStrategy&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;cancel_orders_on_position_close&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3M&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIN_PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_level_nr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12M&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4H&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;minimum_distance_to_outer_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.55</span>
-<span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0022</span>
-<span class="w">          </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">}</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">]</span>
-<span class="p">}</span>
-</code></pre></div>
 </details>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;persisted_tick_purge_expiry_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5m&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;symbol_configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;symbol&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;CHZUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;DOTUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;DOGEUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;AVAXUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;ETCUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;LINKUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;ADAUSDT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;XRPUSDT&quot;</span>
+<span class="w">          </span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;exchange_leverage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;long&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigLongStrategy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.125</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;cancel_orders_on_position_close&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3M&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIN_PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_level_nr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12M&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4H&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;minimum_distance_to_outer_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.07</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.8</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0028</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;short&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigShortStrategy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;cancel_orders_on_position_close&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3M&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIN_PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_level_nr&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;12M&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;4H&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PEAKS_TROUGHS_HIGHLOW&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;minimum_distance_to_outer_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.55</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0022</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
 <h2 id="tight-manual-grid">Tight manual grid</h2>
 <p>The configuration below shows a setup that trades much more aggressively using a fixed-distance grid trading both long &amp; short. The stoploss is disabled
 in this configuration, but can simply be enabled by changing the <code>enabled</code> field for the stoploss config to <code>true</code>.
@@ -609,73 +609,145 @@ The configuration trades using a grid of 5 orders, but has an aggressive <code>r
 This configuration is a good starting point if you want to run grids specific to the momentum of a coin.</p>
 <details class="note">
 <summary>config.json</summary>
+</details>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;multicore&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;state_synchronize_interval_s&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;initial_entry_block_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11000</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;override_max_exposure_ratio_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;persisted_tick_purge_expiry_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5m&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;symbol_configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">          </span><span class="nt">&quot;symbol&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;ANKRUSDT&quot;</span>
+<span class="w">          </span><span class="p">],</span>
+<span class="w">          </span><span class="nt">&quot;long&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigLongStrategy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;tick_execution_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00001</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;repost_lower_allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3D&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.042</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;allow_add_new_smaller_dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0025</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;last_entry_trigger_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;post_stoploss_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANUAL&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STOP&quot;</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">},</span>
+<span class="w">          </span><span class="nt">&quot;short&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigShortStrategy&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;tick_execution_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">              </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00001</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;repost_higher_allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">              </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3D&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;outer_price_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.042</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;allow_add_new_smaller_dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0025</span>
+<span class="w">              </span><span class="p">},</span>
+<span class="w">              </span><span class="nt">&quot;stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;last_entry_trigger_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;post_stoploss_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANUAL&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STOP&quot;</span>
+<span class="w">              </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+</code></pre></div>
+<h2 id="manual-scalping-aid">Manual scalping aid</h2>
+<p>The configuration below shows an example configuration that can be used as a manual scalping aid on long positions. There are several keys mapped to actions as can be seen in the config.
+Next to placing a grid upon pushing the corresponding button (<code>b</code> in the example below), it will also automatically maintain a stoploss-order to enforce a maximum loss budget (set at 1% of the 
+exposed balance in the example below). Upon each order fill, it will automatically move the stoploss to enforce this loss budget. Lastly, it has a number of TP distances that can be changed using 
+the 1-9 keys, and a trailing stoploss that is activated once the position is ensured to be in profit.</p>
+<blockquote>
+<p>[!CAUTION]
+Please be aware this strategy will capture your keyboard output to perform it\'s tasks, so make sure you\'re not doing anything else on your machine when using this</p>
+</blockquote>
+<details class="note">
+<summary>config.json</summary>
+</details>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;hedge_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;multicore&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;state_synchronize_interval_s&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;initial_entry_block_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;override_max_exposure_ratio_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;use_embedded_redis&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;persisted_tick_purge_expiry_time&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5m&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;state_synchronize_interval_s&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;symbol_configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;symbol&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="s2">&quot;ANKRUSDT&quot;</span>
+<span class="w">        </span><span class="s2">&quot;OMUSDT&quot;</span>
 <span class="w">      </span><span class="p">],</span>
 <span class="w">      </span><span class="nt">&quot;long&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigLongStrategy&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;tick_execution_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ManualScalpLongStrategy&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tick_execution_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;pulse_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00001</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;repost_lower_allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3D&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.042</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;allow_add_new_smaller_dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">          </span><span class="nt">&quot;initial_entry_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;dca_multiplier&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;grid_width&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;nr_orders_per_grid&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;entry_offset_price_steps&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_buy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_cancel_entry&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;c&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_cancel_all&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_toggle_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_toggle_stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;l&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;key_close_position&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+<span class="w">          </span><span class="nt">&quot;tp_distances&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.001</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;2&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.002</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;3&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.003</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;4&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.004</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;5&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;6&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.006</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;7&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.007</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;8&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.008</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;9&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.009</span>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0025</span>
+<span class="w">            </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.005</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;trailing_enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;trailing_activation_distance_from_position_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0019</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;trailing_trigger_distance_from_current_price&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0014</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;trailing_execution_distance_price_steps&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;trailing_shift_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.002</span>
 <span class="w">          </span><span class="p">},</span>
 <span class="w">          </span><span class="nt">&quot;stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;last_entry_trigger_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;post_stoploss_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANUAL&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STOP&quot;</span>
-<span class="w">          </span><span class="p">}</span>
-<span class="w">        </span><span class="p">}</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">      </span><span class="nt">&quot;short&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;BigShortStrategy&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;tick_execution_interval_ms&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;wallet_exposure_ratio&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span>
-<span class="w">        </span><span class="nt">&quot;strategy_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nt">&quot;entry_order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LIMIT&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;limit_orders_reissue_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.00001</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;repost_higher_allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">          </span><span class="nt">&quot;dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;period&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3D&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;period_timeframe&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1m&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;algo&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LINEAR&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;nr_clusters&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;outer_price_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.042</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;ratio_power&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;allow_add_new_smaller_dca&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
-<span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;minimum_tp&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0025</span>
-<span class="w">          </span><span class="p">},</span>
-<span class="w">          </span><span class="nt">&quot;stoploss&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;last_entry_trigger_distance&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;post_stoploss_mode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MANUAL&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="nt">&quot;order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STOP&quot;</span>
+<span class="w">            </span><span class="nt">&quot;enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;order_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;STOP&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;upnl_exposed_wallet_trigger_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01</span>
 <span class="w">          </span><span class="p">}</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">      </span><span class="p">}</span>
@@ -683,7 +755,6 @@ This configuration is a good starting point if you want to run grids specific to
 <span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
-</details>
 
 
 

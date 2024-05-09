@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  hawkbot:
+    build: .
+    container_name: hawkbot
+    restart: on-failure
+    ports:
+        - "6969:6969"
+    volumes:
+      - ./configs:/src/user_data
+      - ./logs:/src/logs
+      - ./pyarmor.rkey:/src/pyarmor.rkey
+    logging:
+      options:
+        max-size: 2048m
+    command: >
+      python trade.py -a bybit_01 -W ${PARAMS}

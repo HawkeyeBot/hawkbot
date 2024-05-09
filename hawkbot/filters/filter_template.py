@@ -1,8 +1,7 @@
 import logging
 from typing import List, Dict
 
-from hawkbot.core.data_classes import SymbolPositionSide, FilterResult
-from hawkbot.core.model import PositionSide
+from hawkbot.core.data_classes import FilterResult
 from hawkbot.core.filters.filter import Filter
 
 logger = logging.getLogger(__name__)

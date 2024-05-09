@@ -2,12 +2,10 @@ import collections
 import logging
 from typing import List, Dict
 
-from hawkbot.core.data_classes import SymbolPositionSide, ChangeStatistic, FilterResult, ExchangeState
-from hawkbot.core.model import PositionSide
+from hawkbot.core.data_classes import ChangeStatistic, FilterResult, ExchangeState
+from hawkbot.core.filters.filter import Filter
 from hawkbot.core.time_provider import now_timestamp
 from hawkbot.exceptions import InvalidConfigurationException
-from hawkbot.core.filters.filter import Filter
-from hawkbot.utils import period_as_ms
 
 logger = logging.getLogger(__name__)
 

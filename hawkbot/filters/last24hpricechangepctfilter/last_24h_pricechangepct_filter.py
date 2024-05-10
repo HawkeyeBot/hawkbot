@@ -55,9 +55,9 @@ class Last24hPriceChangePctFilter(Filter):
 
         if self.sort is not None:
             reverse = True if self.sort == 'desc' else False
-            ordered_volume = sorted(ordered_pricechangepct.items(), reverse=reverse)
+            ordered_pricechangepct = sorted(ordered_pricechangepct.items(), reverse=reverse)
 
-        selected_list = [row for volume, row in ordered_pricechangepct]
+        selected_list = [row for price_changepct, row in ordered_pricechangepct]
         if self.top:
             selected_list = selected_list[:self.top]
 

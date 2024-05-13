@@ -6,7 +6,7 @@ services:
     container_name: hawkbot
     restart: on-failure
     ports:
-        - "6969:6969"
+        - "${WEB_UI_PORT}:6969"
     volumes:
       - ./configs:/src/user_data
       - ./logs:/src/logs
@@ -15,4 +15,4 @@ services:
       options:
         max-size: 2048m
     command: >
-      python trade.py -a bybit_01 -W ${PARAMS}
+      python trade.py -a ${BOT_ACCOUNT} ${BOT_PARAMS}

@@ -36,7 +36,7 @@ class RestServer(Plugin):
 
     def start_server(self):
         logger.info('Starting REST server')
-        app = RestFlaskApp(redis_port=self.redis_port, mode_processor=self.mode_processor)
+        app = RestFlaskApp(redis_host=self.redis_host, redis_port=self.redis_port, mode_processor=self.mode_processor)
         CORS(app)
         app.run(host=self.host, port=self.port)
         logger.info('Started REST server')

@@ -107,7 +107,10 @@
         desired_position_distance_after_dca (float): TODO
         initial_entry_size (float): when using the `dca_quantity_multiplier` parameter, this needs to be set to determine the initial entry size. This is a ratio of the exposed
                                 balance, so for example setting this to 0.01 will make the first order 1% of the exposed balance
-        dca_quantity_multiplier (float): the multiple with which each subsequence DCA order's size is multiplied
+        previous_quantity_multiplier (float): the multiplier with which each subsequende DCA's order size is multiplied; this multiplier is applied on the quantity of the last
+                                        calculated order quantity
+        dca_quantity_multiplier (float): the multiplier with which each subsequent DCA order's size is multiplied; this multiplier is applied on the accumulated quantity of all
+                                        orders up to that point
         minimum_number_dca_quantities (int = 15): TODO
         override_insufficient_levels_available (bool = False): TODO
         check_dca_against_wallet (bool = true): TODO

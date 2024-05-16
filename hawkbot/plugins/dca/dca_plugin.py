@@ -51,6 +51,7 @@ class DcaConfig:
     maximum_position_coin_size: float = field(default_factory=lambda: None)
     initial_entry_size: float = field(default_factory=lambda: None)
     desired_position_distance_after_dca: float = field(default_factory=lambda: None)
+    previous_quantity_multiplier: float = field(default_factory=lambda: None)
     dca_quantity_multiplier: float = field(default_factory=lambda: None)
     minimum_number_dca_quantities: int = 15
     override_insufficient_levels_available: bool = False
@@ -95,6 +96,7 @@ class DcaPlugin(Plugin):
                                                       'outer_price_nr_clusters',
                                                       'nr_clusters',
                                                       'quantity_unit_margin',
+                                                      'previous_quantity_multiplier',
                                                       'dca_quantity_multiplier',
                                                       'ratio_power',
                                                       'check_dca_against_wallet',
@@ -150,11 +152,14 @@ class DcaPlugin(Plugin):
             if dca_config.outer_price_period is not None:
                 raise InvalidConfigurationException("The parameter 'outer_price_algo' is not set in the configuration")
 
-        if dca_config.dca_quantity_multiplier is None and dca_config.ratio_power is None and dca_config.desired_position_distance_after_dca is None:
-            raise InvalidConfigurationException(f"Either of the parameters 'ratio_power', 'dca_quantity_multiplier' or 'desired_position_distance_after_dca' "
-                                                f"is required but is not set.")
-        if dca_config.dca_quantity_multiplier is not None and dca_config.ratio_power is not None:
-            raise InvalidConfigurationException(f"Both parameters 'ratio_power' or 'dca_quantity_multiplier' are "
+        if dca_config.dca_quantity_multiplier is None \
+                and dca_config.previous_quantity_multiplier is None \
+                and dca_config.ratio_power is None \
+                and dca_config.desired_position_distance_after_dca is None:
+            raise InvalidConfigurationException(f"Either of the parameters 'ratio_power', 'dca_quantity_multiplier', 'previous_quantity_multiplier' "
+                                                f"or 'desired_position_distance_after_dca' is required but is not set.")
+        if (dca_config.dca_quantity_multiplier is not None or dca_config.previous_quantity_multiplier is not None) and dca_config.ratio_power is not None:
+            raise InvalidConfigurationException(f"Both parameters 'ratio_power' and ('dca_quantity_multiplier' or 'previous_quantity_multiplier') are "
                                                 f"set but only one of the two is allowed.")
 
         if dca_config.minimum_distance_to_outer_price is not None \
@@ -585,32 +590,55 @@ class DcaPlugin(Plugin):
                                              symbol_information: SymbolInformation,
                                              initial_cost: float,
                                              wallet_exposure: float) -> List[float]:
-        initial_entry_order = self.exchange_state.initial_entry_order(symbol=symbol, position_side=position_side)
-        logger.info(f'Initial entry order: {initial_entry_order}')
-        if dca_config.check_dca_against_wallet:
-            initial_entry_price = initial_entry_order.price
+        if self.exchange_state.has_open_position(symbol=symbol, position_side=position_side):
+            initial_entry_order = self.exchange_state.initial_entry_order(symbol=symbol, position_side=position_side)
+            logger.info(f'Initial entry order: {initial_entry_order}')
+            if dca_config.check_dca_against_wallet:
+                initial_entry_price = initial_entry_order.price
+                wallet_balance = self.exchange_state.symbol_balance(symbol)
+                initial_cost_amount = wallet_balance * wallet_exposure * initial_cost
+                min_entry_qty = calc_min_qty(price=initial_entry_price,
+                                             inverse=False,
+                                             qty_step=symbol_information.quantity_step,
+                                             min_qty=symbol_information.minimum_quantity,
+                                             min_cost=symbol_information.minimal_buy_cost)
+                max_entry_qty = round_(cost_to_quantity(cost=initial_cost_amount, price=initial_entry_price, inverse=False),
+                                       step=symbol_information.quantity_step)
+                accumulated_qty = max(min_entry_qty, max_entry_qty)
+                position_size = self.exchange_state.position(symbol=symbol, position_side=position_side)
+                logger.info(f'{symbol} {position_side.name}: Accumulated qty {accumulated_qty} based on initial cost {initial_cost} '
+                            f'({wallet_balance} * {wallet_exposure} * {initial_cost}) at entry price '
+                            f'{initial_entry_price}. Current position size = {position_size}')
+            else:
+                accumulated_qty = initial_entry_order.quantity
+        else:
+            if position_side == PositionSide.LONG:
+                initial_entry_price = max(level_prices)
+            else:
+                initial_entry_price = min(level_prices)
             wallet_balance = self.exchange_state.symbol_balance(symbol)
-            initial_cost_amount = wallet_balance * wallet_exposure * initial_cost
+            initial_cost_amount = wallet_balance * wallet_exposure * dca_config.initial_entry_size
             min_entry_qty = calc_min_qty(price=initial_entry_price,
                                          inverse=False,
                                          qty_step=symbol_information.quantity_step,
                                          min_qty=symbol_information.minimum_quantity,
                                          min_cost=symbol_information.minimal_buy_cost)
-            max_entry_qty = round_(cost_to_quantity(cost=initial_cost_amount, price=initial_entry_price, inverse=False),
+            max_entry_qty = round_(cost_to_quantity(cost=initial_cost_amount,
+                                                    price=initial_entry_price,
+                                                    inverse=False),
                                    step=symbol_information.quantity_step)
             accumulated_qty = max(min_entry_qty, max_entry_qty)
-            position_size = self.exchange_state.position(symbol=symbol, position_side=position_side)
-            logger.info(f'{symbol} {position_side.name}: Accumulated qty {accumulated_qty} based on initial cost {initial_cost} '
-                        f'({wallet_balance} * {wallet_exposure} * {initial_cost}) at entry price '
-                        f'{initial_entry_price}. Current position size = {position_size}')
-        else:
-            accumulated_qty = initial_entry_order.quantity
 
         quantities: List[float] = []
+        desired_qty = None
         for i in range(max(len(level_prices), dca_config.minimum_number_dca_quantities)):
-            # desired_qty = round_dn(last_qty * timeframe_multiplier, step=symbol_information.quantity_step)
-            desired_qty = round_dn(accumulated_qty * dca_config.dca_quantity_multiplier,
-                                   step=symbol_information.quantity_step)
+            if dca_config.previous_quantity_multiplier is not None:
+                if desired_qty is None:
+                    desired_qty = accumulated_qty
+                else:
+                    desired_qty = round_dn(desired_qty * dca_config.previous_quantity_multiplier, step=symbol_information.quantity_step)
+            elif dca_config.dca_quantity_multiplier is not None:
+                desired_qty = round_dn(accumulated_qty * dca_config.dca_quantity_multiplier, step=symbol_information.quantity_step)
             if i < len(level_prices):
                 level_price = level_prices[i]
                 if desired_qty == 0:
@@ -622,7 +650,15 @@ class DcaPlugin(Plugin):
                 if position_side == PositionSide.SHORT and symbol_information.minimal_sell_cost is not None and \
                         desired_qty * level_price < symbol_information.minimal_sell_cost:
                     continue
-            logger.info(f'{symbol} {position_side.name}: accumulated_qty={accumulated_qty}, order qty={desired_qty}')
+
+                min_entry_qty = calc_min_qty(price=level_price,
+                                             inverse=False,
+                                             qty_step=symbol_information.quantity_step,
+                                             min_qty=symbol_information.minimum_quantity,
+                                             min_cost=symbol_information.minimal_buy_cost if position_side == PositionSide.LONG else symbol_information.minimal_sell_cost)
+                desired_qty = max(min_entry_qty, desired_qty)
+
+            logger.debug(f'{symbol} {position_side.name}: accumulated_qty={accumulated_qty}, order qty={desired_qty}')
             accumulated_qty += desired_qty
             quantities.append(desired_qty)
         return quantities

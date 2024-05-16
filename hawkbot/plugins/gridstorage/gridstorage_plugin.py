@@ -71,4 +71,5 @@ class GridStoragePlugin(Plugin):
         prices = self.get_prices(symbol=symbol, position_side=position_side)
         quantities = self.get_quantities(symbol=symbol, position_side=position_side)
 
+        logger.debug(f'{symbol} {position_side.name}: Prices = {prices}, quantities = {quantities}')
         return len(prices) > 0 and len(quantities) > 0

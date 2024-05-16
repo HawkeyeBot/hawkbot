@@ -905,13 +905,26 @@ orders will be placed using the LIN_PEAKS_TROUGHS_HIGHLOW algo, which uses a lin
           </td>
         </tr>
         <tr>
+          <td><code><span title="hawkbot.plugins.dca.previous_quantity_multiplier">previous_quantity_multiplier</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>the multiplier with which each subsequende DCA's order size is multiplied; this multiplier is applied on the quantity of the last
+                            calculated order quantity</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td><code><span title="hawkbot.plugins.dca.dca_quantity_multiplier">dca_quantity_multiplier</span></code></td>
           <td>
                 <code>float</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>the multiple with which each subsequence DCA order's size is multiplied</p>
+              <p>the multiplier with which each subsequent DCA order's size is multiplied; this multiplier is applied on the accumulated quantity of all
+                            orders up to that point</p>
             </div>
           </td>
         </tr>

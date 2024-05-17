@@ -17,7 +17,7 @@
                 "activate_hedge_above_wallet_exposure_pct": 35,
                 "dca_config": {
                     "algo": "LINEAR",
-                    "ratio_power" 1.4,
+                    "ratio_power": 1.4,
                     "nr_clusters": 4,
                     "outer_price_distance": 0.04
                 }

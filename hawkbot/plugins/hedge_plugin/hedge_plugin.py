@@ -55,9 +55,9 @@ class HedgePlugin(Plugin):
         #     for threshold, order_size in hedge_dict['upnl_pct_threshold_hedge_order_size'].items():
         #         hedge_config.upnl_pct_threshold_hedge_order_size[float(threshold)] = order_size
 
-        if 'dca' not in hedge_dict:
-            raise InvalidConfigurationException('A configuration block "dca" is expected for the hedge plugin')
-        hedge_config.dca_config = self.dca_plugin.parse_config(hedge_dict['dca'])
+        if 'dca_config' not in hedge_dict:
+            raise InvalidConfigurationException('A configuration block "dca_config" is expected for the hedge plugin')
+        hedge_config.dca_config = self.dca_plugin.parse_config(hedge_dict['dca_config'])
         return hedge_config
 
     def calculate_hedge_orders(self, symbol: str,

@@ -350,6 +350,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                         f"the last candle start_date = {readable(max([candle.start_date for candle in candles]))}, "
                         f"the lowest close price = {min([candle.close for candle in candles])}, "
                         f"the highest close price = {max([candle.close for candle in candles])}."
+                        f"The lower price = {lower_price}, the upper price = {upper_price}"
                         )
 
         start = self.time_provider.get_utc_now_timestamp()

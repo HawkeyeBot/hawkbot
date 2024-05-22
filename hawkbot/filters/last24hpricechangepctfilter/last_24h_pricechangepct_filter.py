@@ -6,6 +6,7 @@ from hawkbot.core.data_classes import ChangeStatistic, FilterResult, ExchangeSta
 from hawkbot.core.filters.filter import Filter
 from hawkbot.core.time_provider import now_timestamp
 from hawkbot.exceptions import InvalidConfigurationException
+from hawkbot.utils import fill_optional_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -20,17 +21,18 @@ class Last24hPriceChangePctFilter(Filter):
         self.exchange = None  # Injected by framework
         self.exchange_state: ExchangeState = None  # Injected by framework
         self.sort: str = None
+        self.sort_absolute: bool = False
         self.top: int = None
         self.init_config(self.filter_config)
 
         self.first_iteration = now_timestamp()
 
     def init_config(self, filter_config):
-        if 'sort' in filter_config:
-            self.sort = filter_config['sort']
-
-        if 'top' in filter_config:
-            self.top = filter_config['top']
+        fill_optional_parameters(target=self,
+                                 config=filter_config,
+                                 optional_parameters=['sort',
+                                                      'top',
+                                                      'sort_absolute'])
 
         if self.top is None and self.sort is None:
             raise InvalidConfigurationException("Either the parameter 'sort' and/or 'top' needs to be specified for "
@@ -51,6 +53,8 @@ class Last24hPriceChangePctFilter(Filter):
         changes: Dict[str, ChangeStatistic] = self.exchange.fetch_last_24h_changes()
         for symbol in starting_list:
             pricechange_pct = changes[symbol].priceChangePct
+            if self.sort_absolute is True:
+                pricechange_pct = abs(pricechange_pct)
             ordered_pricechangepct[pricechange_pct] = symbol
 
         if self.sort is not None:

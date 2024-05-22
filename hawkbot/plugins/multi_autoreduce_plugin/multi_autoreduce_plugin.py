@@ -151,6 +151,8 @@ class MultiAutoreducePlugin(Plugin):
                 reduce_price = round_(current_price + (1 * symbol_information.price_step), symbol_information.price_step)
 
             quantity_to_close = income_to_reduce / reduce_price
+            logger.info(f'{symbol} {position_side.name}: Quantity to close = {quantity_to_close}, income to reduce = {income_to_reduce}, reduce price = {reduce_price}')
+            quantity_to_close = min(quantity_to_close, position_to_reduce.position_size)
             quantity_to_close = round_dn(quantity_to_close, symbol_information.quantity_step)
 
             if quantity_to_close == 0:

@@ -12,7 +12,7 @@
                                                          of the exposed balance. An example to illustrate: if you're running a wallet balance of $1000, your wallet_exposure_ratio is
                                                          set to 2, and "activate_size_above_exposed_balance_pct" is set to 25, then the position will be eligible for reduction when
                                                          the cost of the position exceeds $500
-        activate_above_upnl_pct (float): Indicates that a position is eligible for reduction if the UPNL percentage is bigger than this percentage. Please take not that the UPNL
+        activate_above_upnl_pct (float): Indicates that a position is eligible for reduction if the UPNL percentage is bigger than this percentage. Please take note that the UPNL
                                          percentage takes leverage into account
         last_processed_income_file (str = "./data/multi_autoreduce_last_processed_income"): The file where the plugin stores the timestamp of the last time it processed the profits.
                                         Removing this file basically resets the plugin

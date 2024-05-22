@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../modes/">
+        <link rel="prev" href="../plugins/multi_autoreduce_plugin/">
       
       
-        <link rel="next" href="../exchanges/">
+        <link rel="next" href="../strategies/">
       
       
       <link rel="icon" href="../img/favicon.ico">
@@ -20,7 +20,7 @@
     
     
       
-        <title>UI - Hawkbot</title>
+        <title>About filters - Hawkbot</title>
       
     
     
@@ -63,6 +63,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#filters" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -94,7 +99,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              UI
+              About filters
             
           </span>
         </div>
@@ -226,17 +231,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ui/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -245,7 +243,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -421,17 +418,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
         
           
           <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
@@ -445,7 +444,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_8">
             <span class="md-nav__icon md-icon"></span>
             Dynamic symbols
@@ -456,10 +455,19 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../filters/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -468,6 +476,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -557,6 +566,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -571,29 +582,34 @@
                   
 
 
-  <h1>UI</h1>
-
-<p>Hawkbot provides a web-based UI by default. This UI is disabled by default,
-but can be enabled with a single argument to the commandline.</p>
-<p>Due to the flexible plugin mechanism Hawkbot provides, it is also possible to write your own plugin to provide a custom UI.</p>
-<p>The easiest way to enable the UI is by passing the <code>-W</code> argument to the commandline when starting the bot:</p>
-<p><code>python trade.py -W</code></p>
-<h3 id="web-ui">Web UI</h3>
-<p>The web UI provides a web-based interface to monitor &amp; interact with the bot. This UI is easier on the eyes, takes
-litte server resources, and provides greater flexibility in functionality that can be implemented.
-The web UI looks as follows:</p>
-<p><img alt="web_ui" src="../img/web_screenshot.jpg" /></p>
-<p>For security reasons, it is advised to access the web UI over an SSH tunnel. If not using an SSH tunnel, make
-sure you take appropriate security measures to keep access safe.</p>
-<p>To use an SSH tunnel on Linux for example, you can use the following command:</p>
-<p><code>ssh -L 6969:127.0.0.1:6969 &lt;user&gt;@&lt;ip&gt;</code></p>
-<p>By default, the web UI can be reached on port 6969. If you want to use a different port, you can provide the following snippet in the config-file:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;plugin_configs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;RestServer&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">9996</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">}</span>
-</code></pre></div>
+<h1 id="filters">Filters</h1>
+<p>Hawkbot provides functionality to dynamically select symbols for trading on. This funtionality is achieved by using
+the dynamic entry selector. This dynamic entry selector is a mechanism that will run a set of selected filters,
+each of which gets a chance at specifying which symbols are(n't) candidate symbols to run. The result of these filters
+is then used by the dynamic entry selector to determine which symbols actually need to get activated.</p>
+<p>This mechanism takes into account a maximum number of positions that can be ran, and which position strategies are 
+already active. An activated strategy will never be deactivated until it has indicated it can be deactivated. Typically,
+this is indicated by a strategy when it is no longer in a position and is no longer on the list of candidates.</p>
+<p>Hawkbot provides a flexible mechanism to specify any (set of) filters to be used by the dynamic entry selector to determine
+which symbols to run. A number of filters are provided out of the box by Hawkbot, but other filters can be added by simply writing
+your own filter. The following filters are provided out of the box by Hawkbot:</p>
+<ul>
+<li>Age filter</li>
+<li>ATR filter</li>
+<li>Candle volume filter</li>
+<li>CSV symbol filter</li>
+<li>Last 24h price change percentage filter</li>
+<li>Last 24h volume change filter</li>
+<li>Support/resistance level filter</li>
+<li>Maximum quantity filter</li>
+<li>Minimum notional filter</li>
+<li>Randomizer</li>
+<li>Sublist filter</li>
+<li>Tick counter filter</li>
+<li>Trend reversal filter</li>
+<li>Volatility filter</li>
+</ul>
+<p>For a description of each of the filters you can check the Filters section of the documentation</p>
 
 
 

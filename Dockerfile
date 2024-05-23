@@ -9,6 +9,7 @@ COPY ./requirements.txt /src/requirements.txt
 RUN pip install --upgrade -r /src/requirements.txt
 
 COPY ./hawkbot /src/hawkbot
+COPY ./trade.py /src
 COPY ./hawkbot_rt/__init__.py /src/hawkbot_rt/
 COPY ./hawkbot_rt/py311 /src/hawkbot_rt/py311
 COPY LICENSE logging.yaml trade.py /

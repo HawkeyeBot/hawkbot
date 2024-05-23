@@ -17,7 +17,7 @@ For further information on how to use the bot, please refer to the [documentatio
 
 # Repository
 
-You can find the code on [Github](https://github.com/HawkeyeBot/hawkbot.git)
+You can find the code on [GitHub](https://github.com/HawkeyeBot/hawkbot.git)
 
 # Support
 You can join discord at https://discord.gg/GjZ7Eej2N9

@@ -249,7 +249,7 @@ class BigLongStrategy(AbstractBaseStrategy):
             maximum_allowed_loss = self.stoploss_plugin.determine_maximum_allowed_loss(wallet_balance=wallet_balance,
                                                                                        exposed_balance=exposed_balance,
                                                                                        stoploss_config=self.stoploss_config)
-            if first_trigger_price > last_dca_price:
+            if first_trigger_price is not None and first_trigger_price > last_dca_price:
                 logger.warning(
                     f'{symbol} {position_side.name}: NOT PLACING INITIAL GRID because the stoploss price for '
                     f'maximum allowed loss of {maximum_allowed_loss} would be {first_trigger_price}, which is '

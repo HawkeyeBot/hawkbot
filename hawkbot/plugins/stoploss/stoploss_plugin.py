@@ -259,6 +259,8 @@ class StoplossPlugin(Plugin):
                                                                                exposed_wallet_balance=exposed_balance,
                                                                                dca_orders=open_dca_orders,
                                                                                stoploss_config=stoploss_config)
+            if first_trigger_price is None:
+                return []
 
         trigger_prices = self.calculate_trigger_prices(symbol=symbol,
                                                        position_side=position.position_side,
@@ -358,13 +360,22 @@ class StoplossPlugin(Plugin):
                                                                stoploss_config=stoploss_config)
         position_post_dca = self.calculate_position_after_dcas(position=position, dca_orders=dca_orders)
         if position.position_side == PositionSide.LONG:
-            sell_price = position_post_dca.entry_price - max_allowed_loss / position_post_dca.position_size
+            # Stoploss price = position price - (max allowed loss / position size)
+            sell_price = position_post_dca.entry_price - (max_allowed_loss / position_post_dca.position_size)
+            if sell_price <= 0:
+                logger.info(f'{position.symbol} {position.position_side.name}: Stoploss price at allowed loss {max_allowed_loss} will be {sell_price} which is less than 0, not '
+                            f'placing stoploss (yet)')
+                return None
             first_trigger_price = sell_price * (1 + stoploss_config.stoploss_sell_distance)
             if current_price > first_trigger_price:
                 first_trigger_price = min(first_trigger_price, current_price)
         else:
-            sell_price = position_post_dca.entry_price + max_allowed_loss / position_post_dca.position_size
+            sell_price = position_post_dca.entry_price + (max_allowed_loss / position_post_dca.position_size)
             first_trigger_price = sell_price * (1 - stoploss_config.stoploss_sell_distance)
+            if sell_price > current_price * 2:
+                logger.info(f'{position.symbol} {position.position_side.name}: Stoploss price at allowed loss {max_allowed_loss} will be {sell_price} which is more than twice '
+                            f'the current price {current_price}, not placing stoploss (yet)')
+                return None
             if current_price < first_trigger_price:
                 first_trigger_price = max(first_trigger_price, current_price)
 

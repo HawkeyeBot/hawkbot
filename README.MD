@@ -1,4 +1,4 @@
-![logo](docs/img/hawkbot_logo.png)
+![logo](hawkbot_logo.png)
 
 :warning: **Use at your own risk, you are fully responsible for any risk taken trading. Crypto can be lucrative, but 
 is also a high-risk asset class** :warning:

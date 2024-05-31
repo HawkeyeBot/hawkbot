@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   hawkbot:
     build: .
@@ -8,9 +6,10 @@ services:
     ports:
         - "${WEB_UI_PORT}:6969"
     volumes:
-      - ./configs:/src/user_data
+      - ./user_data:/src/user_data
       - ./logs:/src/logs
       - ./pyarmor.rkey:/src/pyarmor.rkey
+      - ./data:/src/data
     logging:
       options:
         max-size: 2048m

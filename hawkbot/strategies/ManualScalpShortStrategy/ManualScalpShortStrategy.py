@@ -12,7 +12,7 @@ from hawkbot.utils import calc_min_qty, round_, fill_required_parameters
 logger = logging.getLogger(__name__)
 
 
-class ManualScalpLongStrategy(AbstractBaseStrategy):
+class ManualScalpShortStrategy(AbstractBaseStrategy):
     def __init__(self):
         super().__init__()
         self.entry_offset_price_steps: int = None
@@ -21,7 +21,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
         self.initial_entry_size: float = None
         self.dca_multiplier: float = None
         self.listener: keyboard.Listener = keyboard.Listener(on_press=self.on_press)
-        self.key_buy: str = None
+        self.key_sell: str = None
         self.key_cancel_entry: str = None
         self.key_cancel_all: str = None
         self.key_toggle_tp: str = None
@@ -45,7 +45,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                'grid_width',
                                'nr_orders_per_grid',
                                'entry_offset_price_steps',
-                               'key_buy',
+                               'key_sell',
                                'key_cancel_entry',
                                'key_cancel_all',
                                'key_toggle_tp',
@@ -55,7 +55,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                'key_pause']
         fill_required_parameters(target=self, config=self.strategy_config, required_parameters=required_parameters)
         self.default_minimum_tp = self.tp_config.minimum_tp
-        self.key_mapping[self.key_buy] = self._place_entry_grid
+        self.key_mapping[self.key_sell] = self._place_entry_grid
         self.key_mapping[self.key_cancel_entry] = self._cancel_entry_orders
         self.key_mapping[self.key_cancel_all] = self._cancel_all_orders
         self.key_mapping[self.key_toggle_tp] = self._toggle_tp
@@ -78,7 +78,6 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
 
         if key.char == self.key_quit:
             os.kill(os.getpid(), signal.SIGTERM)
-
 
         try:
             key_pressed = key.char
@@ -137,13 +136,13 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
             grid_cost = exposed_balance * self.initial_entry_size
         else:
             grid_cost = position.cost * self.dca_multiplier
-        first_order_price = current_price - offset
+        first_order_price = current_price + offset
         cost_per_order = grid_cost / self.nr_orders_per_grid
         order_quantity = round_(cost_per_order / first_order_price, symbol_information.quantity_step)
         grid_order_spacing = self.grid_width / self.nr_orders_per_grid
 
         for i in range(self.nr_orders_per_grid):
-            price = round_(number=first_order_price * (1 - (i * grid_order_spacing)),
+            price = round_(number=first_order_price * (1 + (i * grid_order_spacing)),
                            step=symbol_information.price_step)
 
             min_quantity = calc_min_qty(price=price,
@@ -240,11 +239,12 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
 
     def _close_position(self, key_pressed):
         position = self.exchange_state.position(symbol=self.symbol, position_side=self.position_side)
+
         if position.has_position():
             logger.info(f'{self.symbol} {self.position_side.name}: Closing position {position}')
             symbol_information = self.exchange_state.get_symbol_information(self.symbol)
             current_price = self.exchange_state.get_last_price(self.symbol)
-            sell_price = round_(number=current_price - (2 * symbol_information.price_step), step=symbol_information.price_step)
+            buy_price = round_(number=current_price + (2 * symbol_information.price_step), step=symbol_information.price_step)
             self._cancel_all_orders(key_pressed)
             self.order_executor.create_order(LimitOrder(order_type_identifier=OrderTypeIdentifier.GTFO,
                                                         symbol=self.symbol,
@@ -252,7 +252,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                                         side=self.position_side.decrease_side(),
                                                         position_side=position.position_side,
                                                         initial_entry=False,
-                                                        price=sell_price,
+                                                        price=buy_price,
                                                         reduce_only=True,
                                                         time_in_force=TimeInForce.GOOD_TILL_CANCELED))
         else:

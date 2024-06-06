@@ -711,6 +711,7 @@ class AbstractBaseStrategy(Strategy):
 
         new_stoploss_orders.extend(original_new_stoploss_orders)
         open_stoploss_orders = self.exchange_state.open_stoploss_orders(symbol=symbol, position_side=position_side)
+
         exchange_changed = self.enforce_grid(new_orders=new_stoploss_orders,
                                              exchange_orders=open_stoploss_orders,
                                              lowest_price_first=True,

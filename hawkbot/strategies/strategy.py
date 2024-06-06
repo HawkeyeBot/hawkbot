@@ -14,7 +14,7 @@ from hawkbot.core.orderbook.orderbook import OrderBook
 from hawkbot.core.strategy.data_classes import InitializeConfig
 from hawkbot.core.tickstore.tickstore import Tickstore
 from hawkbot.core.time_provider import TimeProvider
-from hawkbot.exceptions import InvalidOrderException, InvalidArgumentException, OrderCancelException
+from hawkbot.exceptions import InvalidOrderException, InvalidArgumentException, OrderCancelException, PassedPriceException
 from hawkbot.logging import user_log
 from hawkbot.core.plugins.plugin_loader import PluginLoader
 from hawkbot.utils import calc_min_qty, round_
@@ -413,12 +413,13 @@ class Strategy(object):
                     self.order_executor.cancel_orders(orders)
                 return
             else:
-                user_log.debug(f'{symbol} {self.position_side.name}: Received trigger NO_OPEN_POSITION', __name__)
-                self.on_no_open_position(symbol=symbol,
-                                         position=position,
-                                         symbol_information=symbol_information,
-                                         wallet_balance=self.exchange_state.symbol_balance(symbol),
-                                         current_price=self.exchange_state.last_tick_price(symbol))
+                if position.no_position():
+                    user_log.debug(f'{symbol} {self.position_side.name}: Received trigger NO_OPEN_POSITION', __name__)
+                    self.on_no_open_position(symbol=symbol,
+                                             position=position,
+                                             symbol_information=symbol_information,
+                                             wallet_balance=self.exchange_state.symbol_balance(symbol),
+                                             current_price=self.exchange_state.last_tick_price(symbol))
         else:
             if Trigger.STRATEGY_ACTIVATED in triggers:
                 user_log.debug(f'{symbol} {self.position_side.name}: Received trigger STRATEGY_ACTIVATED',
@@ -622,7 +623,12 @@ class Strategy(object):
                                                                    wallet_exposure=wallet_exposure,
                                                                    wallet_exposure_ratio=wallet_exposure_ratio)
 
-    def enforce_grid(self, new_orders: List[Order], exchange_orders: List[Order], lowest_price_first: bool = False, cancel_before_create: bool = True) -> bool:
+    def enforce_grid(self,
+                     new_orders: List[Order],
+                     exchange_orders: List[Order],
+                     lowest_price_first: bool = False,
+                     cancel_before_create: bool = True,
+                     throw_exception_on_price_passed: bool = False) -> bool:
         if len(new_orders) == 0 and len(exchange_orders) == 0:
             return False
 
@@ -651,10 +657,20 @@ class Strategy(object):
                 except OrderCancelException:
                     return True
 
-                self._create_orders(exchange_orders=exchange_orders, new_orders=new_orders, lowest_price_first=lowest_price_first)
+                try:
+                    self._create_orders(exchange_orders=exchange_orders, new_orders=new_orders, lowest_price_first=lowest_price_first)
+                except PassedPriceException as e:
+                    if throw_exception_on_price_passed is True:
+                        raise e
+                    return False
                 return True
             else:
-                self._create_orders(exchange_orders=exchange_orders, new_orders=new_orders, lowest_price_first=lowest_price_first)
+                try:
+                    self._create_orders(exchange_orders=exchange_orders, new_orders=new_orders, lowest_price_first=lowest_price_first)
+                except PassedPriceException as e:
+                    if throw_exception_on_price_passed is True:
+                        raise e
+                    return False
                 try:
                     self._cancel_orders(symbol=symbol, position_side=position_side, exchange_orders=exchange_orders, new_orders=new_orders)
                 except OrderCancelException:

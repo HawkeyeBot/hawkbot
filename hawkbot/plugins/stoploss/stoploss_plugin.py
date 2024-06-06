@@ -4,7 +4,7 @@ from typing import List, Dict
 
 from hawkbot.core.data_classes import ExchangeState
 from hawkbot.core.model import Position, SymbolInformation, Order, StopLimitOrder, OrderTypeIdentifier, Side, \
-    PositionSide, Mode, OrderType, StopLossMarketOrder
+    PositionSide, Mode, OrderType, StopLossMarketOrder, TimeInForce
 from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.core.plugins.plugin import Plugin
 from hawkbot.utils import round_, round_dn, calc_min_qty, round_up
@@ -23,7 +23,7 @@ class StoplossConfig:
     wallet_exposure_threshold: float = field(default=None)
     relative_wallet_exposure_threshold: float = field(default=None)
     stoploss_at_inverse_tp: bool = field(default=None)
-    stoploss_sell_distance: float = 0.002
+    stoploss_sell_distance_price_steps: int = 3
     grid_range: float = field(default=None)
     nr_orders: int = 1
     post_stoploss_mode: Mode = field(default=None)
@@ -53,7 +53,7 @@ class StoplossPlugin(Plugin):
         optional_parameters = ['enabled',
                                'stoploss_price',
                                'position_trigger_distance',
-                               'sell_distance',
+                               'stoploss_sell_distance_price_steps',
                                'grid_range',
                                'nr_orders',
                                'post_stoploss_mode',
@@ -158,6 +158,29 @@ class StoplossPlugin(Plugin):
                                                                                trigger_distance=stoploss_config.trailing_distance,
                                                                                symbol_information=symbol_information,
                                                                                existing_stoploss_orders=existing_stoploss_orders)
+        elif stoploss_config.stoploss_at_inverse_tp is not None and self.exchange_state.has_open_position(symbol=symbol, position_side=position_side.inverse()):
+            open_tp_orders = self.exchange_state.open_tp_orders(symbol=symbol, position_side=position_side.inverse())
+            if len(open_tp_orders) > 0:
+                if position_side == PositionSide.LONG:
+                    # inverse will be short orders, so first TP order is max of TP orders
+                    raw_sl_price = max([order.price for order in open_tp_orders])
+                    # raw_sl_price = raw_sl_price - symbol_information.price_step  # make it place the SL 1 unit beyond the TP
+                    # first_trigger_price = round_(number=raw_sl_price + (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step),
+                    #                              step=symbol_information.price_step)
+                    first_trigger_price = round_(number=raw_sl_price - symbol_information.price_step, step=symbol_information.price_step)  # trigger at TP price - 1 unit
+                    raw_sl_price = first_trigger_price - (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
+                elif position_side == PositionSide.SHORT:
+                    # inverse will be long orders, so first TP order is min of TP orders
+                    raw_sl_price = min([order.price for order in open_tp_orders])
+                    # raw_sl_price = raw_sl_price + symbol_information.price_step  # make it place the SL 1 unit beyond the TP
+                    # first_trigger_price = round_(number=raw_sl_price - (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step),
+                    #                              step=symbol_information.price_step)
+                    raw_sl_price = raw_sl_price + symbol_information.price_step  # make it place the SL 1 unit beyond the TP
+                    first_trigger_price = round_(number=raw_sl_price, step=symbol_information.price_step)
+                    raw_sl_price = first_trigger_price + (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
+                # sell_price = round_(number=raw_sl_price, step=symbol_information.price_step)
+            else:
+                return []
         elif custom_trigger_price is not None:
             first_trigger_price = round_(number=custom_trigger_price,
                                          step=symbol_information.price_step)
@@ -238,18 +261,6 @@ class StoplossPlugin(Plugin):
                 logger.debug(f'{symbol} {position_side.name}: Not activating stoploss because the last filled price '
                              f'is None')
                 return []
-        elif stoploss_config.stoploss_at_inverse_tp is not None:
-            open_tp_orders = self.exchange_state.open_tp_orders(symbol=symbol, position_side=position_side.inverse())
-            if len(open_tp_orders) > 0:
-                if position_side == PositionSide.LONG:
-                    # inverse will be short orders, so first TP order is max of TP orders
-                    raw_sl_price = max([order.price for order in open_tp_orders])
-                elif position_side == PositionSide.SHORT:
-                    # inverse will be long orders, so first TP order is min of TP orders
-                    raw_sl_price = min([order.price for order in open_tp_orders])
-                first_trigger_price = round_(number=raw_sl_price, step=symbol_information.price_step)
-            else:
-                return []
         else:
             open_dca_orders = self.exchange_state.open_dca_orders(symbol=symbol, position_side=position_side)
             first_trigger_price = self._calculate_first_trigger_price_from_dca(position=position,
@@ -273,7 +284,7 @@ class StoplossPlugin(Plugin):
         # create the stoploss orders
         stoploss_orders = self.create_stoploss_grid_orders(position=position,
                                                            position_side=position_side,
-                                                           stoploss_sell_distance=stoploss_config.stoploss_sell_distance,
+                                                           stoploss_sell_distance_price_steps=stoploss_config.stoploss_sell_distance_price_steps,
                                                            symbol=symbol,
                                                            symbol_information=symbol_information,
                                                            trigger_prices=trigger_prices,
@@ -284,7 +295,7 @@ class StoplossPlugin(Plugin):
                                      position=position,
                                      position_side=position_side,
                                      stoploss_orders=stoploss_orders,
-                                     stoploss_sell_distance=stoploss_config.stoploss_sell_distance,
+                                     stoploss_sell_distance_price_steps=stoploss_config.stoploss_sell_distance_price_steps,
                                      symbol=symbol,
                                      symbol_information=symbol_information,
                                      order_type=stoploss_config.order_type)
@@ -366,12 +377,12 @@ class StoplossPlugin(Plugin):
                 logger.info(f'{position.symbol} {position.position_side.name}: Stoploss price at allowed loss {max_allowed_loss} will be {sell_price} which is less than 0, not '
                             f'placing stoploss (yet)')
                 return None
-            first_trigger_price = sell_price * (1 + stoploss_config.stoploss_sell_distance)
+            first_trigger_price = sell_price + (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
             if current_price > first_trigger_price:
                 first_trigger_price = min(first_trigger_price, current_price)
         else:
             sell_price = position_post_dca.entry_price + (max_allowed_loss / position_post_dca.position_size)
-            first_trigger_price = sell_price * (1 - stoploss_config.stoploss_sell_distance)
+            first_trigger_price = sell_price - (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
             if sell_price > current_price * 2:
                 logger.info(f'{position.symbol} {position.position_side.name}: Stoploss price at allowed loss {max_allowed_loss} will be {sell_price} which is more than twice '
                             f'the current price {current_price}, not placing stoploss (yet)')
@@ -415,7 +426,7 @@ class StoplossPlugin(Plugin):
                                 position: Position,
                                 position_side: PositionSide,
                                 stoploss_orders: List[Order],
-                                stoploss_sell_distance: float,
+                                stoploss_sell_distance_price_steps: float,
                                 symbol: str,
                                 symbol_information: SymbolInformation,
                                 order_type: OrderType):
@@ -431,10 +442,10 @@ class StoplossPlugin(Plugin):
                 side = position_side.decrease_side()
                 if order_type == OrderType.STOP:
                     if position_side == PositionSide.LONG:
-                        sell_price = first_trigger_price * (1 - stoploss_sell_distance)
+                        sell_price = first_trigger_price - (stoploss_sell_distance_price_steps * symbol_information.price_step)
                         sell_price = round_dn(sell_price, symbol_information.price_step)
                     else:
-                        sell_price = first_trigger_price * (1 + stoploss_sell_distance)
+                        sell_price = first_trigger_price + (stoploss_sell_distance_price_steps * symbol_information.price_step)
                         sell_price = round_up(sell_price, symbol_information.price_step)
 
                     new_stoploss_order = StopLimitOrder(order_type_identifier=OrderTypeIdentifier.STOPLOSS,
@@ -466,7 +477,7 @@ class StoplossPlugin(Plugin):
     def create_stoploss_grid_orders(self,
                                     position: Position,
                                     position_side: PositionSide,
-                                    stoploss_sell_distance: float,
+                                    stoploss_sell_distance_price_steps: float,
                                     symbol: str,
                                     symbol_information: SymbolInformation,
                                     trigger_prices: List[float],
@@ -474,6 +485,8 @@ class StoplossPlugin(Plugin):
         stoploss_orders = []
         quantity_per_order = position.position_size / len(trigger_prices)
         quantity_per_order = round_dn(quantity_per_order, symbol_information.quantity_step)
+        logger.debug(f'{symbol} {position_side.name}: Creating stoploss order(s) for {len(trigger_prices)} trigger prices. Total quantity to create stoploss order(s) for is '
+                    f'{position.position_size}. Quantity per order = {quantity_per_order}')
         if position.position_side == PositionSide.LONG:
             min_cost = symbol_information.minimal_sell_cost
         else:
@@ -493,10 +506,10 @@ class StoplossPlugin(Plugin):
             side = Side.SELL if position.position_side == PositionSide.LONG else Side.BUY
             if order_type == OrderType.STOP:
                 if position.position_side == PositionSide.LONG:
-                    sell_price = trigger_price * (1 - stoploss_sell_distance)
+                    sell_price = trigger_price - (stoploss_sell_distance_price_steps * symbol_information.price_step)
                     sell_price = round_dn(sell_price, symbol_information.price_step)
                 else:
-                    sell_price = trigger_price * (1 + stoploss_sell_distance)
+                    sell_price = trigger_price + (stoploss_sell_distance_price_steps * symbol_information.price_step)
                     sell_price = round_up(sell_price, symbol_information.price_step)
 
                 new_stoploss_order = StopLimitOrder(order_type_identifier=OrderTypeIdentifier.STOPLOSS,
@@ -505,7 +518,8 @@ class StoplossPlugin(Plugin):
                                                     side=side,
                                                     position_side=position_side,
                                                     price=sell_price,
-                                                    stop_price=trigger_price)
+                                                    stop_price=trigger_price,
+                                                    time_in_force=TimeInForce.POST_ONLY)
                 if len(trigger_prices) == 1:
                     new_stoploss_order.close_position = True
                     logger.debug(f'{symbol} {position_side.name}: Setting close position')

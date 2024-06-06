@@ -148,3 +148,6 @@ venv*/*
 profile_output.txt
 profile_results.txt
 *.pstats
+pyarmor*.rkey
+pyarmor*
+license_info.json

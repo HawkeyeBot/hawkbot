@@ -25,6 +25,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
         self.key_cancel_entry: str = None
         self.key_cancel_all: str = None
         self.key_toggle_tp: str = None
+        self.key_toggle_trailing: str = None
         self.key_toggle_stoploss: str = None
         self.key_close_position: str = None
         self.key_quit: str = None
@@ -32,6 +33,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
         self.ctrlc = str(chr(ord("C") - 64))
         self.tp_distances: dict = {}
         self.default_minimum_tp: float = None
+        self.default_trailing_enabled: bool = None
         self.paused: bool = False
 
         self.key_mapping = {}
@@ -49,6 +51,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                'key_cancel_entry',
                                'key_cancel_all',
                                'key_toggle_tp',
+                               'key_toggle_trailing',
                                'key_toggle_stoploss',
                                'key_close_position',
                                'key_quit',
@@ -59,6 +62,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
         self.key_mapping[self.key_cancel_entry] = self._cancel_entry_orders
         self.key_mapping[self.key_cancel_all] = self._cancel_all_orders
         self.key_mapping[self.key_toggle_tp] = self._toggle_tp
+        self.key_mapping[self.key_toggle_trailing] = self._toggle_trailing
         self.key_mapping[self.key_toggle_stoploss] = self._toggle_sl
         self.key_mapping[self.key_close_position] = self._close_position
         self.key_mapping[self.key_pause] = self._pause
@@ -120,7 +124,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
             logger.info(f'{self.symbol} {self.position_side.name}: Not placing entry grid because there is a {self.position_side.inverse().name} position open')
             return
 
-        self.order_executor.cancel_orders(self.exchange_state.open_stoploss_orders(symbol=self.symbol, position_side=self.position_side.inverse()))
+        self.order_executor.cancel_orders(self.exchange_state.all_open_orders(symbol=self.symbol, position_side=self.position_side.inverse()))
 
         if self.exchange_state.has_no_open_position(symbol=self.symbol, position_side=self.position_side):
             self.order_executor.cancel_orders(self.exchange_state.open_stoploss_orders(symbol=self.symbol, position_side=self.position_side))
@@ -217,6 +221,29 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                  current_price=current_price,
                                  wiggle_config=self.wiggle_config)
 
+    def _toggle_trailing(self, key_pressed):
+        if self.exchange_state.has_no_open_position(symbol=self.symbol, position_side=self.position_side):
+            logger.info(f'{self.symbol} {self.position_side.name}: No open position, ignoring keypress {key_pressed}')
+            return
+
+        position = self.exchange_state.position(symbol=self.symbol, position_side=self.position_side)
+        symbol_information = self.exchange_state.get_symbol_information(self.symbol)
+        current_price = self.exchange_state.get_last_price(self.symbol)
+
+        if self.tp_config.trailing_enabled is True:
+            logger.info(f'{self.symbol} {self.position_side.name}: Disabling trailing TP')
+            self.tp_config.trailing_enabled = False
+            self.enforce_tp_grid(position=position, symbol_information=symbol_information, symbol=self.symbol, current_price=current_price, wiggle_config=self.wiggle_config)
+            self.order_executor.cancel_orders(self.exchange_state.open_tp_orders(symbol=self.symbol, position_side=self.position_side))
+        else:
+            logger.info(f'{self.symbol} {self.position_side.name}: Enabling trailing TP')
+            self.tp_config.trailing_enabled = True
+            self.enforce_tp_grid(symbol=self.symbol,
+                                 position=position,
+                                 symbol_information=symbol_information,
+                                 current_price=current_price,
+                                 wiggle_config=self.wiggle_config)
+
     def _toggle_sl(self, key_pressed):
         if self.exchange_state.has_no_open_position(symbol=self.symbol, position_side=self.position_side):
             logger.info(f'{self.symbol} {self.position_side.name}: No open position, ignoring keypress {key_pressed}')
@@ -279,6 +306,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                    wallet_balance=wallet_balance,
                                    current_price=current_price)
         self.tp_config.minimum_tp = self.default_minimum_tp
+        self.tp_config.trailing_enabled = self.default_trailing_enabled
 
     def on_stoploss_filled(self,
                            symbol: str,

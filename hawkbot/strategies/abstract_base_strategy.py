@@ -793,10 +793,14 @@ class AbstractBaseStrategy(Strategy):
             cancel_before_create = not any([o.order_type_identifier == OrderTypeIdentifier.TRAILING_TP for o in new_tp_orders])
             if open_trailing_tp_order is not None:
                 open_tp_orders.append(open_trailing_tp_order)
+
+            logger.info(f'{symbol} {self.position_side.name}: TP orders enforced, new TP orders: {new_tp_orders}, exchange_orders: {open_tp_orders}')
             return self.enforce_grid(new_orders=new_tp_orders,
                                      exchange_orders=open_tp_orders,
                                      lowest_price_first=True,
                                      cancel_before_create=cancel_before_create)
+        else:
+            logger.info(f'{symbol} {self.position_side.name}: No TP orders to be created according to plugin')
 
     def enforce_tp_refill(self,
                           symbol: str,

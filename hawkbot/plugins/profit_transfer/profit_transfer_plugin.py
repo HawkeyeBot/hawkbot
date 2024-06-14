@@ -143,6 +143,7 @@ class ProfitTransferPlugin(Plugin):
                 last_start_income = last_income.timestamp + Timeframe.ONE_SECOND.milliseconds
 
             last_start_income = max(last_start_income, last_start_income - period_as_ms('7D'))
+            logger.info(f'Fetching income from {readable(last_income)} until {readable(now)}')
             new_incomes = self.exchange.fetch_incomes(start_time=last_start_income + 1, end_time=now)
             if len(new_incomes) > 0:
                 unique_assets = set([income.asset for income in new_incomes])

@@ -81,6 +81,9 @@ class ProfitTransferPlugin(Plugin):
         self.transfer_interval = period_as_s(plugin_config['transfer_interval'])
         self.initial_lookback_period = period_as_ms(plugin_config['initial_lookback_period'])
 
+        if self.initial_lookback_period > period_as_ms('7D'):
+            raise InvalidConfigurationException('The parameter \'initial_lookbacck_period\' can not be greater than 7 days')
+
         if 'transfer_type' in plugin_config:
             self.transfer_type = TransferType(plugin_config['transfer_type'])
         else:
@@ -138,12 +141,14 @@ class ProfitTransferPlugin(Plugin):
             now = self.time_provider.get_utc_now_timestamp()
             last_income = self.get_last_stored_income()
             if last_income is None:
-                last_start_income = self.time_provider.get_utc_now_timestamp() - self.initial_lookback_period
+                last_start_income = now - self.initial_lookback_period
+                logger.info(f'Last stored income is None, last_start_income is set to {readable(last_start_income)}')
             else:
                 last_start_income = last_income.timestamp + Timeframe.ONE_SECOND.milliseconds
+                logger.info(f'Last stored income is {readable(last_income.timestamp)}, setting last_start_income to {readable(last_start_income)}')
 
-            last_start_income = max(last_start_income, last_start_income - period_as_ms('7D'))
-            logger.info(f'Fetching income from {readable(last_income)} until {readable(now)}')
+            last_start_income = max(last_start_income, now - period_as_ms('7D'))
+            logger.info(f'Fetching income from {readable(last_start_income)} until {readable(now)} (last income = {readable(last_income.timestamp)}')
             new_incomes = self.exchange.fetch_incomes(start_time=last_start_income + 1, end_time=now)
             if len(new_incomes) > 0:
                 unique_assets = set([income.asset for income in new_incomes])

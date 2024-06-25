@@ -9,6 +9,7 @@ from hawkbot.core.plugins.plugin import Plugin
 from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.plugins.dca.dca_plugin import DcaConfig, DcaPlugin
 from hawkbot.plugins.gridstorage.gridstorage_plugin import GridStoragePlugin
+from hawkbot.plugins.tp.tp_plugin import TpConfig, TpPlugin
 from hawkbot.utils import readable_pct, fill_optional_parameters
 
 logger = logging.getLogger(__name__)
@@ -22,11 +23,13 @@ class HedgeConfig:
     activate_hedge_above_upnl_pct: float = field(default=None)
     # upnl_pct_threshold_hedge_order_size: Dict[float, float] = field(default_factory=lambda: {})
     dca_config: DcaConfig = field(default=None)
+    tp_config: TpConfig = field(default=None)
 
 
 class HedgePlugin(Plugin):
     dca_plugin: DcaPlugin
     gridstorage_plugin: GridStoragePlugin
+    tp_plugin: TpPlugin
 
     @classmethod
     def plugin_name(cls):
@@ -58,6 +61,10 @@ class HedgePlugin(Plugin):
         if 'dca_config' not in hedge_dict:
             raise InvalidConfigurationException('A configuration block "dca_config" is expected for the hedge plugin')
         hedge_config.dca_config = self.dca_plugin.parse_config(hedge_dict['dca_config'])
+        if 'tp_config' in hedge_dict:
+            hedge_config.tp_config = self.tp_plugin.parse_config(hedge_dict['tp_config'])
+        else:
+            hedge_config.tp_config = self.tp_plugin.parse_config({})
         return hedge_config
 
     def calculate_hedge_orders(self, symbol: str,

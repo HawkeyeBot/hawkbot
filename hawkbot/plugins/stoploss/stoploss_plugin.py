@@ -405,8 +405,8 @@ class StoplossPlugin(Plugin):
 
     def calculate_position_after_dcas(self, position: Position, dca_orders: List[Order]) -> Position:
         position_side = position.position_side
-        position_entry_price = position.entry_price
-        position_size = position.position_size
+        position_entry_price = position.entry_price if position.entry_price is not None else 0
+        position_size = position.position_size if position.position_size is not None else 0
         if position_side == PositionSide.LONG:
             dca_orders.sort(key=lambda o: o.price, reverse=True)
         else:

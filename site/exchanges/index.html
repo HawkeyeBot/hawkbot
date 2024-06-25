@@ -573,8 +573,10 @@
 
   <h1>Exchanges</h1>
 
-<p>Hawkbot provides an abstraction layer on exchange-implementations, making sure that the rest of the code doesn't need to know exchange-specific details.
-This allows for example the core, plugins and strategies to interact with and receive updates from exchange-related information in a more abstract way.</p>
+<p>Hawkbot provides an abstraction layer on exchange-implementations, making sure that the rest of the code doesn't need to
+know exchange-specific details.
+This allows for example the core, plugins and strategies to interact with and receive updates from exchange-related
+information in a more abstract way.</p>
 <p>Currently, the following exchanges are implemented:</p>
 <table>
 <thead>
@@ -604,14 +606,23 @@ This allows for example the core, plugins and strategies to interact with and re
 <td>Bybit testnet</td>
 <td><code>bybit-testnet</code></td>
 </tr>
+<tr>
+<td>CCXT</td>
+<td><code>ccxt</code></td>
+</tr>
 </tbody>
 </table>
-<p>If you have a desire to have a new exchange added you can reach out to discuss. Implementing a new exchange (be it crypto, forex or whatever) requires implementing
-the exchange-interface for that specific exchange.</p>
-<p>In the past, CCXT has been looked into to provide access to many exchanges with just 1 implementation. After some experiments however, it turned out that
-while CCXT provides a nice abstraction layer, there were too many exchange-specific anomalies and lack of certain fundamental exchange-specific aspects.
-As a result, the implementations for each exchange are specific, causing a bit more technical work, but allowing far better fine-grained control over the 
-actual implementation.</p>
+<p>When using CCXT, it will require you to add an extra configuration property <code>exchange_type</code> in the account.json file.
+An example for using CCXT with binance is shown below:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&quot;ccxt_01&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exchange&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;ccxt&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;exchange_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;binanceusdm&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;secret&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+</code></pre></div>
+<p>If you provide a value for exchange_type that is not supported by CCXT, Hawkbot will provide an error listing all the support exchange types.</p>
+<p>If you have a desire to have a new exchange added you can reach out to discuss.</p>
 
 
 

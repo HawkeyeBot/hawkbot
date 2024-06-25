@@ -774,7 +774,14 @@ class AbstractBaseStrategy(Strategy):
 
         # see if the grid needs to be updated
         new_tp_orders = None
-        if self.tp_config.enabled is True:
+        if self.hedge_config.tp_config.enabled is True \
+                and self.hedge_plugin.is_hedge_applicable(symbol=symbol, position_side=self.position_side, hedge_config=self.hedge_config):
+            new_tp_orders = self.tp_plugin.calculate_tp_orders(position=position,
+                                                               position_side=self.position_side,
+                                                               symbol_information=symbol_information,
+                                                               current_price=current_price,
+                                                               tp_config=self.hedge_config.tp_config)
+        elif self.tp_config.enabled is True:
             new_tp_orders = self.tp_plugin.calculate_tp_orders(position=position,
                                                                position_side=self.position_side,
                                                                symbol_information=symbol_information,

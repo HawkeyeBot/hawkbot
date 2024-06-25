@@ -3,7 +3,7 @@ unicorn-binance-websocket-api==1.46.2
 unicorn-binance-rest-api==1.10.0
 unicorn-binance-local-depth-cache==0.7.3
 unicorn-fy==0.12.2
-ccxt==4.3.49
+ccxt==4.3.52
 pandas==2.2.2
 hjson==3.1.0
 SQLAlchemy==1.4.46

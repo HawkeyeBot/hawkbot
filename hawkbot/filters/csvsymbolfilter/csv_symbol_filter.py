@@ -3,7 +3,6 @@ import os
 from typing import List, Dict
 
 from hawkbot.core.data_classes import ExchangeState, FilterResult
-from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.core.filters.filter import Filter
 from hawkbot.utils import fill_required_parameters
 

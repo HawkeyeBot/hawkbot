@@ -3,11 +3,10 @@ from statistics import median
 from typing import List, Dict
 
 from hawkbot.core.candlestore.candlestore import Candlestore
-from hawkbot.core.data_classes import SymbolPositionSide, ExchangeState, FilterResult
+from hawkbot.core.data_classes import ExchangeState, FilterResult
 from hawkbot.core.data_classes import Timeframe
-from hawkbot.core.model import PositionSide
-from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.core.filters.filter import Filter
+from hawkbot.exceptions import InvalidConfigurationException
 
 logger = logging.getLogger(__name__)
 

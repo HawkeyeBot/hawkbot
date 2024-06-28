@@ -140,18 +140,21 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
             first_level_sr.supports.sort(reverse=True)
             first_level_sr.resistances.sort()
 
+            logger.info(f'{symbol} {position_side.name}: Using the first {first_level_nr_clusters} prices the first-level calculation')
             first_level_supports = first_level_sr.supports[0:first_level_nr_clusters]
             if len(first_level_supports) > 0:
                 lowest_first_level_support = min(first_level_supports)
                 lower_inner_supports = [s for s in support_resistance.supports if s < lowest_first_level_support]
+                logger.info(f'{symbol} {position_side.name}: Appending first-level supports {lower_inner_supports} with lower support-price {lower_inner_supports}')
                 first_level_supports.extend(lower_inner_supports)
                 support_resistance.supports = first_level_supports
 
             first_level_resistances = first_level_sr.resistances[0:first_level_nr_clusters]
             if len(first_level_resistances) > 0:
                 highest_first_level_resistance = min(first_level_resistances)
-                lower_inner_resistances = [r for r in support_resistance.resistances if r > highest_first_level_resistance]
-                first_level_resistances.extend(lower_inner_resistances)
+                higher_inner_resistances = [r for r in support_resistance.resistances if r > highest_first_level_resistance]
+                logger.info(f'{symbol} {position_side.name}: Appending first-level resistances {first_level_resistances} with higher resistance prices {higher_inner_resistances}')
+                first_level_resistances.extend(higher_inner_resistances)
                 support_resistance.resistances = first_level_resistances
 
         rounded_support_prices = [round_(price, price_step) for price in support_resistance.supports if price < even_price]

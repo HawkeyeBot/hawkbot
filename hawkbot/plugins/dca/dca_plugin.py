@@ -423,7 +423,6 @@ class DcaPlugin(Plugin):
             return []
         price_step = self.exchange_state.get_symbol_information(symbol).price_step
         minimum_symbol_price = self.exchange_state.get_symbol_information(symbol).minimum_price
-        timeframe = dca_config.period_timeframe
         support_resistance = self.sr_plugin.get_support_resistance_levels(symbol=symbol,
                                                                           position_side=position_side,
                                                                           even_price=maximum_price,

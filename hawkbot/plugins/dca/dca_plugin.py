@@ -657,7 +657,7 @@ class DcaPlugin(Plugin):
                                              min_cost=symbol_information.minimal_buy_cost if position_side == PositionSide.LONG else symbol_information.minimal_sell_cost)
                 desired_qty = max(min_entry_qty, desired_qty)
 
-            logger.debug(f'{symbol} {position_side.name}: accumulated_qty={accumulated_qty}, order qty={desired_qty}')
+            logger.debug(f'{symbol} {position_side.name}: accumulated_qty={accumulated_qty:10f}, order qty={desired_qty:10f}')
             accumulated_qty += desired_qty
             quantities.append(desired_qty)
         return quantities

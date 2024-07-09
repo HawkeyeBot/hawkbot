@@ -44,6 +44,8 @@ class HedgePlugin(Plugin):
         hedge_config = HedgeConfig()
 
         if len(hedge_dict.keys()) == 0:
+            hedge_config.dca_config = self.dca_plugin.parse_config({})
+            hedge_config.tp_config = self.dca_plugin.parse_config({})
             hedge_config.enabled = False
             return hedge_config
 

@@ -5,7 +5,7 @@ import signal
 from pynput import keyboard
 
 from hawkbot.core.data_classes import Trigger
-from hawkbot.core.model import Position, SymbolInformation, LimitOrder, OrderTypeIdentifier, TimeInForce, Side
+from hawkbot.core.model import Position, SymbolInformation, LimitOrder, OrderTypeIdentifier, TimeInForce, Side, StopLimitOrder
 from hawkbot.strategies.abstract_base_strategy import AbstractBaseStrategy
 from hawkbot.utils import calc_min_qty, round_, fill_required_parameters
 
@@ -30,10 +30,13 @@ class ManualScalpShortStrategy(AbstractBaseStrategy):
         self.key_close_position: str = None
         self.key_quit: str = None
         self.key_pause: str = None
+        self.key_hedge_recovery: str = None
+        self.hedge_recovery_multiplier: float = None
         self.ctrlc = str(chr(ord("C") - 64))
         self.tp_distances: dict = {}
         self.default_minimum_tp: float = None
         self.default_trailing_enabled: bool = None
+        self.default_stoploss_at_inverse_tp: bool = None
         self.paused: bool = False
 
         self.key_mapping = {}
@@ -55,7 +58,9 @@ class ManualScalpShortStrategy(AbstractBaseStrategy):
                                'key_toggle_stoploss',
                                'key_close_position',
                                'key_quit',
-                               'key_pause']
+                               'key_pause',
+                               'key_hedge_recovery',
+                               'hedge_recovery_multiplier']
         fill_required_parameters(target=self, config=self.strategy_config, required_parameters=required_parameters)
         self.default_minimum_tp = self.tp_config.minimum_tp
         self.key_mapping[self.key_sell] = self._place_entry_grid
@@ -66,6 +71,7 @@ class ManualScalpShortStrategy(AbstractBaseStrategy):
         self.key_mapping[self.key_toggle_stoploss] = self._toggle_sl
         self.key_mapping[self.key_close_position] = self._close_position
         self.key_mapping[self.key_pause] = self._pause
+        self.key_mapping[self.key_hedge_recovery] = self._hedge_recovery
 
         if "tp_distances" in self.strategy_config:
             for key, value in self.strategy_config['tp_distances'].items():
@@ -282,6 +288,33 @@ class ManualScalpShortStrategy(AbstractBaseStrategy):
                                                         price=buy_price,
                                                         reduce_only=True,
                                                         time_in_force=TimeInForce.GOOD_TILL_CANCELED))
+        else:
+            logger.info(f'{self.symbol} {self.position_side.name}: No open position, ignoring keypress {key_pressed}')
+            return
+
+    def _hedge_recovery(self, key_pressed):
+        position_to_hedge = self.exchange_state.position(symbol=self.symbol, position_side=self.position_side)
+        if position_to_hedge.has_position():
+            logger.info("Placing hedge recovery order")
+            self.order_executor.cancel_orders(self.exchange_state.open_hedge_orders(symbol=self.symbol, position_side=self.position_side.inverse()))
+
+            self.stoploss_config.stoploss_at_inverse_tp = True
+            symbol_information = self.exchange_state.get_symbol_information(self.symbol)
+            current_price = self.exchange_state.get_last_price(self.symbol)
+            trigger_price = round_(number=current_price + (2 * symbol_information.price_step), step=symbol_information.price_step)
+            sell_price = round_(number=trigger_price + symbol_information.price_step, step=symbol_information.price_step)
+
+            hedge_quantity = round_(number=position_to_hedge.position_size * self.hedge_recovery_multiplier, step=symbol_information.quantity_step)
+            # TODO: calculate how big the quantity needs to be in order to TP the same amount as the loss will be
+
+            self.order_executor.create_order(StopLimitOrder(order_type_identifier=OrderTypeIdentifier.HEDGE,
+                                                            symbol=self.symbol,
+                                                            quantity=hedge_quantity,
+                                                            side=self.position_side.inverse().increase_side(),
+                                                            position_side=self.position_side.inverse(),
+                                                            price=sell_price,
+                                                            stop_price=trigger_price,
+                                                            time_in_force=TimeInForce.GOOD_TILL_CANCELED))
         else:
             logger.info(f'{self.symbol} {self.position_side.name}: No open position, ignoring keypress {key_pressed}')
             return

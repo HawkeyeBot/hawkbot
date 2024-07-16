@@ -801,11 +801,13 @@ class AbstractBaseStrategy(Strategy):
             if open_trailing_tp_order is not None:
                 open_tp_orders.append(open_trailing_tp_order)
 
-            logger.info(f'{symbol} {self.position_side.name}: TP orders enforced, new TP orders: {new_tp_orders}, exchange_orders: {open_tp_orders}')
-            return self.enforce_grid(new_orders=new_tp_orders,
-                                     exchange_orders=open_tp_orders,
-                                     lowest_price_first=True,
-                                     cancel_before_create=cancel_before_create)
+            orders_changed = self.enforce_grid(new_orders=new_tp_orders,
+                                               exchange_orders=open_tp_orders,
+                                               lowest_price_first=True,
+                                               cancel_before_create=cancel_before_create)
+            if orders_changed is True:
+                logger.info(f'{symbol} {self.position_side.name}: TP orders enforced, new TP orders: {new_tp_orders}, exchange_orders: {open_tp_orders}')
+            return orders_changed
         else:
             logger.info(f'{symbol} {self.position_side.name}: No TP orders to be created according to plugin')
 

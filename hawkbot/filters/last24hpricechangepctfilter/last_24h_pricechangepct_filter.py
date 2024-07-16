@@ -23,6 +23,7 @@ class Last24hPriceChangePctFilter(Filter):
         self.sort: str = None
         self.sort_absolute: bool = False
         self.top: int = None
+        self.max_price_change_pct: float = None
         self.init_config(self.filter_config)
 
         self.first_iteration = now_timestamp()
@@ -32,7 +33,8 @@ class Last24hPriceChangePctFilter(Filter):
                                  config=filter_config,
                                  optional_parameters=['sort',
                                                       'top',
-                                                      'sort_absolute'])
+                                                      'sort_absolute',
+                                                      'max_price_change_pct'])
 
         if self.top is None and self.sort is None:
             raise InvalidConfigurationException("Either the parameter 'sort' and/or 'top' needs to be specified for "
@@ -55,6 +57,10 @@ class Last24hPriceChangePctFilter(Filter):
             pricechange_pct = changes[symbol].priceChangePct
             if self.sort_absolute is True:
                 pricechange_pct = abs(pricechange_pct)
+            if self.max_price_change_pct is not None:
+                if pricechange_pct > self.max_price_change_pct:
+                    logger.info(f'Skipping symbol {symbol} because the price change pct {pricechange_pct} is more than the maximum allowed price change pct {self.max_price_change_pct}')
+                    continue
             ordered_pricechangepct[pricechange_pct] = symbol
 
         if self.sort is not None:

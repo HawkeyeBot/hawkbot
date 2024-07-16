@@ -164,20 +164,11 @@ class StoplossPlugin(Plugin):
                 if position_side == PositionSide.LONG:
                     # inverse will be short orders, so first TP order is max of TP orders
                     raw_sl_price = max([order.price for order in open_tp_orders])
-                    # raw_sl_price = raw_sl_price - symbol_information.price_step  # make it place the SL 1 unit beyond the TP
-                    # first_trigger_price = round_(number=raw_sl_price + (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step),
-                    #                              step=symbol_information.price_step)
                     first_trigger_price = round_(number=raw_sl_price - symbol_information.price_step, step=symbol_information.price_step)  # trigger at TP price - 1 unit
-                    raw_sl_price = first_trigger_price - (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
                 elif position_side == PositionSide.SHORT:
                     # inverse will be long orders, so first TP order is min of TP orders
                     raw_sl_price = min([order.price for order in open_tp_orders])
-                    # raw_sl_price = raw_sl_price + symbol_information.price_step  # make it place the SL 1 unit beyond the TP
-                    # first_trigger_price = round_(number=raw_sl_price - (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step),
-                    #                              step=symbol_information.price_step)
-                    raw_sl_price = raw_sl_price + symbol_information.price_step  # make it place the SL 1 unit beyond the TP
                     first_trigger_price = round_(number=raw_sl_price, step=symbol_information.price_step)
-                    raw_sl_price = first_trigger_price + (stoploss_config.stoploss_sell_distance_price_steps * symbol_information.price_step)
                 # sell_price = round_(number=raw_sl_price, step=symbol_information.price_step)
             else:
                 return []

@@ -58,5 +58,5 @@ kiteconnect==4.2.0
 pyotp==2.9.0
 Werkzeug==2.2.2
 pycryptodome==3.20.0
-cryptofeed==2.4.0
+cryptofeed==2.4.0; platform_system != "Windows"
 plotly-resampler==0.10.0

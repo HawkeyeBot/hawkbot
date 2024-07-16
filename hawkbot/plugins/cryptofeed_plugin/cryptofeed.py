@@ -114,12 +114,14 @@ class Cryptofeed:
         self.redis.zadd(name=Cryptofeed.TRADEPRICE_SYMBOL + trade.raw['s'], mapping={trade.raw['p']: trade.raw['T']})
 
     @staticmethod
-    def start_process(redis_port: int,
+    def start_process(redis_host: str,
+                      redis_port: int,
                       command_queue: Queue,
                       logging_queue: Queue,
                       plugin_config):
         setproctitle('HB_Cryptofeed_Plugin')
-        cryptofeed_instance = Cryptofeed(redis_port=redis_port,
+        cryptofeed_instance = Cryptofeed(redis_host=redis_host,
+                                         redis_port=redis_port,
                                          command_queue=command_queue,
                                          logging_queue=logging_queue,
                                          plugin_config=plugin_config)

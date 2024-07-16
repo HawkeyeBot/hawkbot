@@ -24,7 +24,8 @@ class CryptofeedPlugin(Plugin):
 
     def start(self):
         cryptofeed_plugin_process = Process(target=Cryptofeed.start_process,
-                                            args=(self.config.redis_port,
+                                            args=(self.config.redis_host,
+                                                  self.config.redis_port,
                                                   self.command_queue,
                                                   get_logging_queue(),
                                                   self.plugin_config),

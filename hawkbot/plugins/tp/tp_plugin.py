@@ -317,6 +317,9 @@ class TpPlugin(Plugin):
                 else:
                     trigger_price = current_price * (1 + tp_config.trailing_trigger_distance_from_current_price)
                     price = trigger_price + tp_config.trailing_execution_distance_price_steps * symbol_information.price_step
+
+            logger.info(f'{symbol} {position_side.name}: Placing trailing TP order triggering at {trigger_price} with '
+                        f'price {price}, current price is {current_price}, position entry price is {position.entry_price}')
         else:
             if isinstance(open_order, LimitOrder):
                 logger.info(
@@ -360,9 +363,6 @@ class TpPlugin(Plugin):
 
         trigger_price = round_(number=trigger_price, step=symbol_information.price_step)
         price = round_(number=price, step=symbol_information.price_step)
-
-        logger.info(f'{symbol} {position_side.name}: Placing trailing TP order triggering at {trigger_price} with '
-                    f'price {price}, current price is {current_price}, position entry price is {position.entry_price}')
 
         return StopLimitOrder(order_type_identifier=OrderTypeIdentifier.TRAILING_TP,
                               symbol=symbol,

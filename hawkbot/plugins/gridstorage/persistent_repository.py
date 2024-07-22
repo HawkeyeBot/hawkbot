@@ -20,8 +20,9 @@ class PersistentRepository:
                                     echo=False,
                                     connect_args={"check_same_thread": False})
         self.metadata = MetaData(bind=self.engine)
-        _GRID_DECL_BASE.metadata.create_all(self.engine, checkfirst=True)
         self.lockable_session = LockableSession(self.engine)
+        with self.lockable_session:
+            _GRID_DECL_BASE.metadata.create_all(self.engine, checkfirst=True)
 
     def store_quantities(self, symbol: str, quantities: List[QuantityRecord]):
         logger.debug(f'Adding quantities list for symbol {symbol}')

@@ -1,11 +1,10 @@
 import logging
 from typing import List, Dict
 
-from hawkbot.core.data_classes import SymbolPositionSide, ExchangeState, FilterResult
-from hawkbot.core.model import PositionSide
+from hawkbot.core.data_classes import ExchangeState, FilterResult
+from hawkbot.core.filters.filter import Filter
 from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.exchange.exchange import Exchange
-from hawkbot.core.filters.filter import Filter
 
 logger = logging.getLogger(__name__)
 

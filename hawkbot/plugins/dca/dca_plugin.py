@@ -5,7 +5,7 @@ from typing import List, Dict
 from hawkbot.core.data_classes import ExchangeState, QuantityPrice
 from hawkbot.core.model import PositionSide, SymbolInformation, Position, LimitOrder, Order, OrderTypeIdentifier, Side, \
     Timeframe
-from hawkbot.exceptions import InvalidConfigurationException
+from hawkbot.exceptions import InvalidConfigurationException, NoInitialEntryOrderException
 from hawkbot.logging import user_log
 from hawkbot.plugins.clustering_sr.algo_type import AlgoType
 from hawkbot.plugins.clustering_sr.clustering_sr_plugin import ClusteringSupportResistancePlugin
@@ -231,7 +231,7 @@ class DcaPlugin(Plugin):
         if dca_config.enabled is False:
             return []
 
-        if position.position_side == PositionSide.LONG:
+        if position.position_side is PositionSide.LONG:
             return self.calculate_dca_grid_long(symbol=symbol,
                                                 position=position,
                                                 symbol_information=symbol_information,
@@ -239,7 +239,7 @@ class DcaPlugin(Plugin):
                                                 wallet_exposure=wallet_exposure,
                                                 current_price=current_price,
                                                 dca_config=dca_config)
-        elif position.position_side == PositionSide.SHORT:
+        elif position.position_side is PositionSide.SHORT:
             return self.calculate_dca_grid_short(symbol=symbol,
                                                  position=position,
                                                  symbol_information=symbol_information,
@@ -262,9 +262,14 @@ class DcaPlugin(Plugin):
         if self.exchange_state.no_dca_orders_on_exchange(symbol=symbol, position_side=position_side):
             logger.info(f'{symbol} {position_side.name}: No DCA orders on the exchange')
             support_prices = self.gridstorage_plugin.get_prices(symbol=symbol, position_side=position_side)
-            support_prices = [price for price in support_prices
-                              if price < self.exchange_state.initial_entry_price(symbol=symbol,
-                                                                                 position_side=position_side)]
+            support_prices = [price for price in support_prices if price <= current_price]
+            try:
+                support_prices = [price for price in support_prices
+                                  if price < self.exchange_state.initial_entry_price(symbol=symbol,
+                                                                                     position_side=position_side)]
+            except NoInitialEntryOrderException:
+                logger.debug(f'{symbol} {position_side.name}: No initial entry found, ignoring filtering out prices below position price')
+
             support_prices.sort(reverse=True)
             if len(support_prices) > 0:
                 # first DCA quantity is for the initial entry
@@ -1390,9 +1395,14 @@ class DcaPlugin(Plugin):
         if self.exchange_state.no_dca_orders_on_exchange(symbol=symbol, position_side=position_side):
             logger.info(f'{symbol} {position_side.name}: No DCA orders on the exchange')
             resistance_prices = self.gridstorage_plugin.get_prices(symbol=symbol, position_side=position_side)
-            resistance_prices = [price for price in resistance_prices
-                                 if price > self.exchange_state.position(symbol=symbol,
-                                                                         position_side=position_side).entry_price]
+            resistance_prices = [price for price in resistance_prices if price >= current_price]
+            try:
+                resistance_prices = [price for price in resistance_prices
+                                     if price > self.exchange_state.position(symbol=symbol,
+                                                                             position_side=position_side).entry_price]
+            except NoInitialEntryOrderException:
+                logger.debug(f'{symbol} {position_side.name}: No initial entry found, ignoring filtering out prices below position price')
+
             resistance_prices.sort(reverse=True)
             if len(resistance_prices) > 0:
                 # first DCA quantity is for the initial entry

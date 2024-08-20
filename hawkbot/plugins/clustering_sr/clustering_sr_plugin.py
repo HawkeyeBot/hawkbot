@@ -67,6 +67,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                                                            price_step=price_step,
                                                            outer_price=dca_config.outer_price,
                                                            outer_price_distance=dca_config.outer_price_distance,
+                                                           outer_price_distance_from_opposite_position=dca_config.outer_price_distance_from_opposite_position,
                                                            outer_price_timeframe=dca_config.outer_price_timeframe,
                                                            outer_price_period=dca_config.outer_price_period,
                                                            outer_price_period_start_date=dca_config.outer_price_period_start_date,
@@ -92,6 +93,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                                                price_step: float,
                                                outer_price: float,
                                                outer_price_distance: float,
+                                               outer_price_distance_from_opposite_position: float,
                                                outer_price_timeframe: Timeframe,
                                                outer_price_period: str,
                                                outer_price_period_start_date: int,
@@ -106,6 +108,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                                                           even_price=even_price,
                                                           outer_price=outer_price,
                                                           outer_price_distance=outer_price_distance,
+                                                          outer_price_distance_from_opposite_position=outer_price_distance_from_opposite_position,
                                                           outer_price_timeframe=outer_price_timeframe,
                                                           outer_price_period=outer_price_period,
                                                           outer_price_period_start_date=outer_price_period_start_date,
@@ -170,6 +173,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                               even_price: float,
                               outer_price: float,
                               outer_price_distance: float,
+                              outer_price_distance_from_opposite_position: float,
                               outer_price_timeframe: Timeframe,
                               outer_price_period: str,
                               outer_price_period_start_date: int,
@@ -178,12 +182,19 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                               outer_price_algo: Algo,
                               minimum_distance_to_outer_price: float,
                               maximum_distance_from_outer_price: float) -> float:
-        if outer_price is not None or outer_price_distance is not None:
+        if outer_price is not None or outer_price_distance is not None or outer_price_distance_from_opposite_position is not None:
             if outer_price_distance is not None:
                 if position_side == PositionSide.LONG:
                     outer_price = even_price * (1 - outer_price_distance)
                 elif position_side == PositionSide.SHORT:
                     outer_price = even_price * (1 + outer_price_distance)
+            if outer_price_distance_from_opposite_position is not None:
+                opposite_position = self.exchange_state.position(symbol=symbol, position_side=position_side.inverse())
+                if opposite_position.no_position():
+                    logger.warning(f'{symbol} {position_side.name}: No grid can be calculated because the parameter outer_price_distance_from_opposite_position is used, but '
+                                   f'there is no opposite open position')
+                    raise NoLevelFoundException
+                outer_price = opposite_position.entry_price * (1 + outer_price_distance_from_opposite_position)
             if minimum_distance_to_outer_price is not None:
                 if position_side == PositionSide.LONG:
                     if even_price < outer_price * (1 + minimum_distance_to_outer_price):

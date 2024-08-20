@@ -35,6 +35,7 @@ class DcaConfig:
     # outer price
     outer_price: float = field(default_factory=lambda: None)
     outer_price_distance: float = field(default_factory=lambda: None)
+    outer_price_distance_from_opposite_position: float = field(default_factory=lambda: None)
     outer_price_period: str = field(default_factory=lambda: None)
     outer_price_timeframe: Timeframe = field(default_factory=lambda: None)
     outer_price_period_start_date: int = field(default_factory=lambda: None)
@@ -88,6 +89,7 @@ class DcaPlugin(Plugin):
                                                       'period_start_date',
                                                       'outer_price',
                                                       'outer_price_distance',
+                                                      'outer_price_distance_from_opposite_position',
                                                       'outer_price_period',
                                                       'outer_price_period_start_date',
                                                       'minimum_distance_to_outer_price',
@@ -171,6 +173,16 @@ class DcaPlugin(Plugin):
         if dca_config.minimum_distance_to_outer_price is not None and dca_config.outer_price_distance is not None:
             raise InvalidConfigurationException(f'Both the parameter \'minimum_distance_to_outer_price\' and the '
                                                 f'parameter \'outer_price_distance\' are set, but these are mutually '
+                                                f'exclusive.')
+
+        if dca_config.minimum_distance_to_outer_price is not None and dca_config.outer_price_distance_from_opposite_position is not None:
+            raise InvalidConfigurationException(f'Both the parameter \'minimum_distance_to_outer_price\' and the '
+                                                f'parameter \'outer_price_distance_from_opposite_position\' are set, but these are mutually '
+                                                f'exclusive.')
+
+        if dca_config.outer_price_distance is not None and dca_config.outer_price_distance_from_opposite_position is not None:
+            raise InvalidConfigurationException(f'Both the parameter \'outer_price_distance\' and the '
+                                                f'parameter \'outer_price_distance_from_opposite_position\' are set, but these are mutually '
                                                 f'exclusive.')
 
         if dca_config.outer_price_timeframe is None and dca_config.outer_price_period is not None:

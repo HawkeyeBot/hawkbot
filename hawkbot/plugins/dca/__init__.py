@@ -87,6 +87,8 @@
         outer_price (float): a specific price to use as the outer price for the grid width
         outer_price_distance (float): a specific distance from the current price for the grid width (for example, setting this at `0.052` will make the grid always 5.2% wide from
                                     the current price)
+        outer_price_distance_from_opposite_position (float) a specific distance from the position price of the opposite position side (for example, setting this to '0.05' will use
+                                    an outer price 5% above the opposition position price)
         outer_price_period (str): the period of candles to get when calculating a dynamic outer price
         outer_price_timeframe (Timeframe): the timeframe of candles to get when calculating a dynamic outer price
         outer_price_period_start_date (int): a specific starting date to get the candles from for calculating the outer price

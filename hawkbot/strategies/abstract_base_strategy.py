@@ -794,12 +794,10 @@ class AbstractBaseStrategy(Strategy):
                                                                  obtp_config=self.obtp_config)
         if new_tp_orders is not None:
             open_tp_orders = self.exchange_state.open_tp_orders(symbol=symbol, position_side=self.position_side)
-            open_trailing_tp_order = self.exchange_state.open_trailing_tp_order(symbol=symbol,
-                                                                                position_side=self.position_side)
+            open_trailing_tp_orders = self.exchange_state.open_trailing_tp_orders(symbol=symbol, position_side=self.position_side)
             # when there's a trailing TP involved, create the new trailing TP before cancelling the old one
             cancel_before_create = not any([o.order_type_identifier == OrderTypeIdentifier.TRAILING_TP for o in new_tp_orders])
-            if open_trailing_tp_order is not None:
-                open_tp_orders.append(open_trailing_tp_order)
+            open_tp_orders.extend(open_trailing_tp_orders)
 
             orders_changed = self.enforce_grid(new_orders=new_tp_orders,
                                                exchange_orders=open_tp_orders,

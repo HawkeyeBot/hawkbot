@@ -5,7 +5,6 @@ from hawkbot.core.data_classes import Candle
 from hawkbot.core.model import PositionSide, SymbolInformation, Timeframe
 from hawkbot.plugins.clustering_sr.algos.algo import Algo
 from hawkbot.plugins.clustering_sr.data_classes import SupportResistance
-from hawkbot.utils import readable
 
 logger = logging.getLogger(__name__)
 

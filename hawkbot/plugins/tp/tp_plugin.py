@@ -254,10 +254,21 @@ class TpPlugin(Plugin):
                                     symbol_information: SymbolInformation,
                                     current_price: float,
                                     tp_config: TpConfig) -> Order:
-        open_order = self.exchange_state.open_trailing_tp_order(symbol=symbol, position_side=position_side)
+        open_orders = self.exchange_state.open_trailing_tp_orders(symbol=symbol, position_side=position_side)
+        open_order = None
+        if len(open_orders) > 0:
+            if position.position_side is PositionSide.LONG:
+                # find trailing TP order with the highest price
+                highest_price = max([o.price for o in open_orders])
+                open_order = [o for o in open_orders if o.price == highest_price][0]
+            else:
+                # find trailing TP order with the lowest price
+                lowest_price = max([o.price for o in open_orders])
+                open_order = [o for o in open_orders if o.price == lowest_price][0]
+
         leverage = self.config.find_symbol_config(symbol).exchange_leverage
         if open_order is None:
-            if position.position_side == PositionSide.LONG:
+            if position.position_side is PositionSide.LONG:
                 if tp_config.trailing_activation_distance_from_position_price is not None:
                     activation_price = position.entry_price * (
                             1 + tp_config.trailing_activation_distance_from_position_price)
@@ -326,7 +337,7 @@ class TpPlugin(Plugin):
                     f'{symbol} {position_side.name}: A limit order of type TRAILING_TP was found, which means the trigger price has been hit. Return the placed limit order.')
                 return open_order
             existing_trigger_price = open_order.stop_price
-            if position_side == PositionSide.LONG:
+            if position_side is PositionSide.LONG:
                 if tp_config.trailing_trigger_distance_upnl_pct is not None:
                     current_pnl = position.calculate_pnl_pct(price=current_price, leverage=leverage)
                     trigger_pnl = current_pnl - tp_config.trailing_trigger_distance_upnl_pct + tp_config.trailing_shift_threshold_upnl_pct

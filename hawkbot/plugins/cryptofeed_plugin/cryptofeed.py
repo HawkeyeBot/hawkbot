@@ -7,6 +7,7 @@ from multiprocessing import Queue
 from cryptofeed import FeedHandler
 from cryptofeed.defines import TRADES, PERPETUAL
 from cryptofeed.exchanges import BinanceFutures
+from cryptofeed.exchanges import Bybit
 from cryptofeed.symbols import Symbol
 from cryptofeed.types import Trade
 from redis import Redis
@@ -56,6 +57,9 @@ class Cryptofeed:
 
         if self.config.exchange == 'binance':
             self.exchange_feed = BinanceFutures
+            self.type = PERPETUAL
+        elif self.config.exchange == 'bybit':
+            self.exchange_feed = Bybit
             self.type = PERPETUAL
         else:
             raise InvalidArgumentException(f'Exchange {self.config.exchange} is not implemented yet in the CryptofeedPlugin, please contact Hawkeye')

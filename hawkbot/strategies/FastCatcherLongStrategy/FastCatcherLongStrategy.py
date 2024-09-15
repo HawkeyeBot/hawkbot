@@ -178,6 +178,12 @@ class FastCatcherLongStrategy(AbstractBaseStrategy):
             price_diff = youngest_price - oldest_price
             price_diff_pct = price_diff / (oldest_price / 100)
             if diff > 0 and oldest_price != youngest_price:
+                logger.info(f"time diff = {diff}, "
+                            f"# ticks = {len(ticks)}, "
+                            f"oldest price = {oldest_price}, "
+                            f"youngest price = {youngest_price}, "
+                            f"price diff pct = {price_diff_pct:.6f}")
+
                 if diff >= self.minimum_time_in_period_threshold and len(ticks) > self.minimum_nr_ticks_threshold and self._price_diff_past_threshold(price_diff_pct):
                     logger.info(
                         f"ENTER: time diff = {diff}, "

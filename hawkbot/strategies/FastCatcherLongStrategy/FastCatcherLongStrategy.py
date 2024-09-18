@@ -70,7 +70,7 @@ class FastCatcherLongStrategy(AbstractBaseStrategy):
         else:
             if curr_ts - self._timestamp_flag_raised > self._signal_valid_for_ms:
                 # cancel signal
-                self._signal_valid_for_ms = None
+                self._timestamp_flag_raised = None
                 self.dca_plugin.erase_grid(symbol=self.symbol, position_side=self.position_side, dca_config=self.dca_config)
 
     def place_grid(self,

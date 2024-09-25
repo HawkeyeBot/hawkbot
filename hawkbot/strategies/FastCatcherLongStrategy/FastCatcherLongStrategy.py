@@ -165,7 +165,7 @@ class FastCatcherLongStrategy(AbstractBaseStrategy):
                                    symbol_information=symbol_information,
                                    wallet_balance=wallet_balance,
                                    current_price=current_price)
-        self._signal_valid_for_ms = None
+        self._timestamp_flag_raised = None
         self.dca_plugin.erase_grid(symbol=self.symbol, position_side=self.position_side, dca_config=self.dca_config)
 
     def entry_allowed(self, ticks) -> bool:

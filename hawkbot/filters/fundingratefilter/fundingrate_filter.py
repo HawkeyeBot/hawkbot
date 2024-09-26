@@ -22,6 +22,8 @@ class FundingRateFilter(Filter):
         self.exchange_state: ExchangeState = None  # Injected by framework
         self.sort: str = None
         self.sort_absolute: bool = False
+        self.select_above: float = None
+        self.select_below: float = None
         self.top: int = None
         self.init_config(self.filter_config)
 
@@ -32,7 +34,9 @@ class FundingRateFilter(Filter):
                                  config=filter_config,
                                  optional_parameters=['sort',
                                                       'top',
-                                                      'sort_absolute'])
+                                                      'sort_absolute',
+                                                      'select_above',
+                                                      'select_below'])
 
         if self.top is None and self.sort is None:
             raise InvalidConfigurationException("Either the parameter 'sort' and/or 'top' needs to be specified for "
@@ -41,6 +45,10 @@ class FundingRateFilter(Filter):
         if self.sort and self.sort != 'desc' and self.sort != 'asc':
             raise InvalidConfigurationException(f"The value '{self.sort}' is not allowed for the parameter 'sort'; "
                                                 f"only the values 'asc' and 'desc' are allowed")
+
+        if self.select_above is not None and self.select_below is not None:
+            raise InvalidConfigurationException("Only one of the parameters 'select_above' or 'select_below' can be specified for "
+                                                "the FundingRateFilter")
 
     def filter_symbols(self,
                        starting_list: List[str],
@@ -56,6 +64,11 @@ class FundingRateFilter(Filter):
                 logger.info(f'No funding rate was found for {symbol}')
                 continue
             funding_rate = funding_rates[symbol]
+            if self.select_below is not None and funding_rate > self.select_below:
+                continue
+            if self.select_above is not None and funding_rate < self.select_above:
+                continue
+
             if self.sort_absolute is True:
                 funding_rate = abs(funding_rate)
             if funding_rate not in ordered_funding_rates:

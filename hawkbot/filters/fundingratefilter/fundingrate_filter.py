@@ -61,7 +61,7 @@ class FundingRateFilter(Filter):
         funding_rates: Dict[str, float] = self.exchange.fetch_funding_rates()
         for symbol in starting_list:
             if symbol not in funding_rates:
-                logger.info(f'No funding rate was found for {symbol}')
+                logger.info(f'No funding rate was found for {symbol:8f}')
                 continue
             funding_rate = funding_rates[symbol]
             if self.select_below is not None and funding_rate > self.select_below:

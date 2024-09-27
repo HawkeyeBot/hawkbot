@@ -61,14 +61,15 @@ class FastCatcherLongStrategy(AbstractBaseStrategy):
             return
 
         if self._timestamp_flag_raised is None:
-            if position.no_position() and self.entry_allowed(ticks):
-                self._timestamp_flag_raised = now_timestamp()
-                self.place_grid(symbol=symbol,
-                                symbol_information=symbol_information,
-                                current_price=current_price,
-                                wallet_balance=wallet_balance)
-            else:
-                self.order_executor.cancel_orders(self.exchange_state.all_open_orders(symbol=symbol, position_side=self.position_side))
+            if position.no_position():
+                if self.entry_allowed(ticks):
+                    self._timestamp_flag_raised = now_timestamp()
+                    self.place_grid(symbol=symbol,
+                                    symbol_information=symbol_information,
+                                    current_price=current_price,
+                                    wallet_balance=wallet_balance)
+                else:
+                    self.order_executor.cancel_orders(self.exchange_state.all_open_orders(symbol=symbol, position_side=self.position_side))
         else:
             if curr_ts - self._timestamp_flag_raised > self._signal_valid_for_ms:
                 # cancel signal

@@ -69,13 +69,14 @@ class FastCatcherLongStrategy(AbstractBaseStrategy):
                                     current_price=current_price,
                                     wallet_balance=wallet_balance)
                 else:
-                    self.order_executor.cancel_orders(self.exchange_state.all_open_orders(symbol=symbol, position_side=self.position_side))
+                    self.order_executor.cancel_orders(self.exchange_state.open_entry_orders(symbol=symbol, position_side=self.position_side))
         else:
             if curr_ts - self._timestamp_flag_raised > self._signal_valid_for_ms:
                 # cancel signal
                 self._timestamp_flag_raised = None
                 self.dca_plugin.erase_grid(symbol=self.symbol, position_side=self.position_side, dca_config=self.dca_config)
-                self.order_executor.cancel_orders(self.exchange_state.all_open_orders(symbol=symbol, position_side=self.position_side))
+                if position.no_position():
+                    self.order_executor.cancel_orders(self.exchange_state.open_entry_orders(symbol=symbol, position_side=self.position_side))
 
     def place_grid(self,
                    symbol: str,

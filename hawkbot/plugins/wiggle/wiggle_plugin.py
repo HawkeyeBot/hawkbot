@@ -6,6 +6,7 @@ from typing import Dict, List
 from hawkbot.core.data_classes import ExchangeState
 from hawkbot.core.model import PositionSide, Order, Position, LimitOrder, OrderTypeIdentifier, SymbolInformation, Side, \
     Mode, Timeframe
+from hawkbot.core.time_provider import now_timestamp
 from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.plugins.clustering_sr.algo_type import AlgoType
 from hawkbot.plugins.clustering_sr.algos.algo import Algo
@@ -125,14 +126,14 @@ class WigglePlugin(Plugin):
         if position.no_position():
             return []
         with self.execution_lock:
-            now = self.bot.time_provider.get_utc_now_timestamp()
+            now = now_timestamp()
             if now < self.last_execution_timestamp + wiggle_config.wiggle_execution_delay_ms:
                 logger.info(f'{symbol} {position_side.name}: Skipping wiggle calculation because last execution time '
                             f'{self.last_execution_timestamp} + wiggle_execution_delay_ms '
                             f'{wiggle_config.wiggle_execution_delay_ms} is not beyond current time {now}')
                 return self.exchange_state.open_wiggle_orders(symbol=symbol, position_side=position_side)
 
-            logger.debug(f'Calculate wiggle at {self.bot.time_provider.get_utc_now_timestamp()}')
+            logger.debug(f'Calculate wiggle at {now_timestamp()}')
             logger.info(f'{symbol} {position_side.name}: Calculating wiggle orders')
 
             force_sell_at_current_price = self.force_sell_at_price(symbol=symbol,
@@ -170,7 +171,7 @@ class WigglePlugin(Plugin):
                 if increase_order is not None:
                     orders.append(increase_order)
 
-            self.last_execution_timestamp = self.bot.time_provider.get_utc_now_timestamp()
+            self.last_execution_timestamp = now_timestamp()
 
         return orders
 

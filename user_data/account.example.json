@@ -5,6 +5,12 @@
     "key": "",
     "secret": ""
   },
+  "ccxt_hl_01": {
+    "exchange": "ccxt",
+    "exchange_type": "hyperliquid",
+    "walletAddress": "",
+    "privateKey": ""
+  },
   "binance_01": {
     "exchange": "binance",
     "key": "",

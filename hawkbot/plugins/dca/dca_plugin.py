@@ -515,7 +515,7 @@ class DcaPlugin(Plugin):
                 max_size = maximum_cost / least_coins_at_price
                 logger.info(f'{symbol} {position_side.name}: Based on wallet balance {wallet_balance} and wallet '
                             f'exposure {wallet_exposure}, the maximum cost is {maximum_cost}. The level price '
-                            f'resulting in the least amount of coins is {least_coins_at_price}. The results in a '
+                            f'resulting in the least amount of coins is {least_coins_at_price}. This results in a '
                             f'maximum position size {max_size}')
 
             ratio_power = dca_config.ratio_power

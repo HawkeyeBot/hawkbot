@@ -38,7 +38,7 @@ class ClusteringSupportResistancePlugin(Plugin, CandlestoreListener):
                                       dca_config) -> SupportResistance:
         self.algos.setdefault(symbol, {}).setdefault(position_side, {})
         if dca_config.algo not in self.algos[symbol][position_side]:
-            self.algos[symbol][position_side][dca_config.algo] = dca_config.algo.value[1]()
+            self.algos[symbol][position_side][dca_config.algo] = dca_config.algo.value[1](dca_config.algo_config)
         if dca_config.outer_price_algo is not None:
             if dca_config.outer_price_algo not in self.algos[symbol][position_side]:
                 self.algos[symbol][position_side][dca_config.outer_price_algo] = dca_config.outer_price_algo.value[1]()

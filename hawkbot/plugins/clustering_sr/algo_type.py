@@ -1,6 +1,7 @@
 from enum import Enum
 
 from hawkbot.plugins.clustering_sr.algos.bmeans_algo import BMeansAlgo
+from hawkbot.plugins.clustering_sr.algos.custom_algo import CustomAlgo
 from hawkbot.plugins.clustering_sr.algos.dmeans_algo import DMeansAlgo
 from hawkbot.plugins.clustering_sr.algos.immediate_linear_algo import ImmediateLinearAlgo
 from hawkbot.plugins.clustering_sr.algos.kmeans_algo import KMeansAlgo
@@ -25,3 +26,4 @@ class AlgoType(Enum):
     DMEANS = 'DMEANS', DMeansAlgo
     LIN_PEAKS_TROUGHS_HIGHLOW = 'LIN_PEAKS_TROUGHS_HIGHLOW', LinPeaksTroughsHighLowAlgo
     LIN_LINEAR_PEAKS_TROUGHS_HIGHLOW = 'LIN_LINEAR_PEAKS_TROUGHS_HIGHLOW', LinLinearPeaksTroughsHighLowAlgo
+    CUSTOM = 'CUSTOM', CustomAlgo

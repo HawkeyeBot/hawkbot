@@ -5,13 +5,13 @@ from typing import List, Dict
 from hawkbot.core.data_classes import ExchangeState, QuantityPrice
 from hawkbot.core.model import PositionSide, SymbolInformation, Position, LimitOrder, Order, OrderTypeIdentifier, Side, \
     Timeframe
+from hawkbot.core.plugins.plugin import Plugin
 from hawkbot.exceptions import InvalidConfigurationException, NoInitialEntryOrderException
 from hawkbot.logging import user_log
 from hawkbot.plugins.clustering_sr.algo_type import AlgoType
 from hawkbot.plugins.clustering_sr.clustering_sr_plugin import ClusteringSupportResistancePlugin
 from hawkbot.plugins.gridstorage.data_classes import QuantityRecord, PriceRecord
 from hawkbot.plugins.gridstorage.gridstorage_plugin import GridStoragePlugin
-from hawkbot.core.plugins.plugin import Plugin
 from hawkbot.utils import round_dn, round_, cost_to_quantity, calc_min_qty, fill_optional_parameters, calculate_new_order_size
 
 logger = logging.getLogger(__name__)
@@ -32,6 +32,7 @@ class DcaConfig:
     algo: AlgoType = field(default_factory=lambda: None)
     period_start_date: int = field(default_factory=lambda: None)
     nr_clusters: int = None
+    algo_config: Dict = None
     # outer price
     outer_price: float = field(default_factory=lambda: None)
     outer_price_distance: float = field(default_factory=lambda: None)
@@ -55,9 +56,19 @@ class DcaConfig:
     previous_quantity_multiplier: float = field(default_factory=lambda: None)
     dca_quantity_multiplier: float = field(default_factory=lambda: None)
     minimum_number_dca_quantities: int = 15
+    explicit_quantity_wallet_multiplier_list: List[float] = None
     override_insufficient_levels_available: bool = False
     check_dca_against_wallet: bool = field(default=True)
     allow_add_new_smaller_dca: bool = field(default=True)
+
+    @property
+    def expected_nr_orders(self):
+        if self.nr_clusters is not None:
+            return self.nr_clusters
+        elif self.algo.name == 'CUSTOM' and 'price_distances' in self.algo_config:
+            return len(self.algo_config['price_distances'])
+        else:
+            raise InvalidConfigurationException("The nr of expected orders could not be determine from either nr_clusters or algo_config")
 
 
 class DcaPlugin(Plugin):
@@ -102,12 +113,14 @@ class DcaPlugin(Plugin):
                                                       'dca_quantity_multiplier',
                                                       'ratio_power',
                                                       'check_dca_against_wallet',
+                                                      'explicit_quantity_wallet_multiplier_list',
                                                       'override_insufficient_levels_available',
                                                       'minimum_number_dca_quantities',
                                                       'desired_position_distance_after_dca',
                                                       'initial_entry_size',
                                                       'minimum_distance_between_levels',
-                                                      'allow_add_new_smaller_dca'])
+                                                      'allow_add_new_smaller_dca',
+                                                      'algo_config'])
 
         if 'first_level_period_timeframe' in dca_dict:
             dca_config.first_level_period_timeframe = Timeframe.parse(dca_dict['first_level_period_timeframe'])
@@ -136,13 +149,13 @@ class DcaPlugin(Plugin):
 
         if 'period' not in dca_dict \
                 and 'period_start_date' not in dca_dict \
-                and dca_config.algo not in [AlgoType.LINEAR, AlgoType.IMMEDIATE_LINEAR]:
+                and dca_config.algo not in [AlgoType.LINEAR, AlgoType.IMMEDIATE_LINEAR, AlgoType.CUSTOM]:
             raise InvalidConfigurationException("One of the parameters 'period' or 'period_start_date is mandatory")
 
         if 'period_timeframe' in dca_dict:
             dca_config.period_timeframe = Timeframe.parse(dca_dict['period_timeframe'])
         else:
-            if dca_config.algo not in [AlgoType.LINEAR, AlgoType.IMMEDIATE_LINEAR]:
+            if dca_config.algo not in [AlgoType.LINEAR, AlgoType.IMMEDIATE_LINEAR, AlgoType.CUSTOM]:
                 raise InvalidConfigurationException("The parameter 'period_timeframe' is not set in the configuration")
 
         if 'outer_price_timeframe' in dca_dict:
@@ -157,9 +170,10 @@ class DcaPlugin(Plugin):
         if dca_config.dca_quantity_multiplier is None \
                 and dca_config.previous_quantity_multiplier is None \
                 and dca_config.ratio_power is None \
-                and dca_config.desired_position_distance_after_dca is None:
+                and dca_config.desired_position_distance_after_dca is None\
+                and dca_config.explicit_quantity_wallet_multiplier_list is None:
             raise InvalidConfigurationException(f"Either of the parameters 'ratio_power', 'dca_quantity_multiplier', 'previous_quantity_multiplier' "
-                                                f"or 'desired_position_distance_after_dca' is required but is not set.")
+                                                f"or 'desired_position_distance_after_dca', 'explicit_quantity_wallet_multiplier_list' is required but is not set.")
         if (dca_config.dca_quantity_multiplier is not None or dca_config.previous_quantity_multiplier is not None) and dca_config.ratio_power is not None:
             raise InvalidConfigurationException(f"Both parameters 'ratio_power' and ('dca_quantity_multiplier' or 'previous_quantity_multiplier') are "
                                                 f"set but only one of the two is allowed.")
@@ -196,6 +210,9 @@ class DcaPlugin(Plugin):
         if dca_config.desired_position_distance_after_dca is not None and dca_config.initial_entry_size is None:
             raise InvalidConfigurationException("The parameter 'initial_entry_size' is required when the parameter "
                                                 "'desired_position_distance_after_dca' is set")
+
+        if dca_config.explicit_quantity_wallet_multiplier_list is not None and len(dca_config.explicit_quantity_wallet_multiplier_list) == 0:
+            raise InvalidConfigurationException("At least 1 value is required when using 'explicit_quantity_wallet_multiplier_list'")
 
         return dca_config
 
@@ -534,6 +551,28 @@ class DcaPlugin(Plugin):
                                                                        dca_config=dca_config,
                                                                        maximum_cost=maximum_cost,
                                                                        symbol_information=symbol_information)
+        elif dca_config.explicit_quantity_wallet_multiplier_list is not None:
+            wallet_balance = self.exchange_state.symbol_balance(symbol)
+            if len(dca_config.explicit_quantity_wallet_multiplier_list) < len(level_prices):
+                raise InvalidConfigurationException(f"There were {len(dca_config.explicit_quantity_wallet_multiplier_list)} quantity multipliers, but only {len(level_prices)} "
+                                                    f"prices were found/provided. This will result in an incomplete, as it can't provide a quantity for all orders. Please provide "
+                                                    f"sufficient values for 'explicit_quantity_wallet_multiplier_list'")
+
+            quantity_list = []
+            if position_side == PositionSide.LONG:
+                level_prices.sort(reverse=True)
+            elif position_side == PositionSide.SHORT:
+                level_prices.sort()
+
+            for i, quantity_multiplier in enumerate(dca_config.explicit_quantity_wallet_multiplier_list):
+                level_price = level_prices[i]
+                # quantity = wallet_balance / price
+                # wallet balance = 100
+                # price = 50
+                # quantity = 2
+                quantity = (wallet_balance * quantity_multiplier) / level_price
+                quantity_list.append(quantity)
+            return quantity_list
         else:
             return self._calculate_dca_quantities_multiplier(symbol=symbol,
                                                              position_side=position_side,

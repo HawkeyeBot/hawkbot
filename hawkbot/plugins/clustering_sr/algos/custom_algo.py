@@ -1,17 +1,15 @@
 import logging
-from typing import List, Dict
+from typing import List
 
 from hawkbot.core.data_classes import Candle
-from hawkbot.core.model import PositionSide, SymbolInformation, Timeframe
-from hawkbot.exceptions import FunctionNotImplementedException
+from hawkbot.core.model import PositionSide, SymbolInformation
+from hawkbot.plugins.clustering_sr.algos.algo import Algo
 from hawkbot.plugins.clustering_sr.data_classes import SupportResistance
 
 logger = logging.getLogger(__name__)
 
 
-class Algo:
-    def __init__(self, algo_config: Dict = None):
-        self.algo_config = algo_config
+class CustomAlgo(Algo):
 
     def calculate_levels(self,
                          symbol: str,
@@ -22,7 +20,12 @@ class Algo:
                          outer_price: float,
                          original_start_date: int,
                          symbol_information: SymbolInformation) -> SupportResistance:
-        raise FunctionNotImplementedException('Algo not implemented')
+        supports = []
+        resistances = []
 
-    def get_candles_start_date(self, symbol: str, timeframe: Timeframe, start_date: int, outer_grid_price: float) -> int:
-        return start_date
+        if position_side == PositionSide.LONG:
+            supports.extend([current_price * price_distance for price_distance in self.algo_config['price_distances']])
+        elif position_side == PositionSide.SHORT:
+            resistances.extend([current_price * price_distance for price_distance in self.algo_config['price_distances']])
+
+        return SupportResistance(supports, resistances)

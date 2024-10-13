@@ -131,7 +131,7 @@ class BigLongStrategy(AbstractBaseStrategy):
 
         if self.entry_order_type == 'LIMIT':
             existing_entry_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=position_side)
-            if len(existing_entry_orders) >= self.dca_config.nr_clusters:
+            if len(existing_entry_orders) >= self.dca_config.expected_nr_orders:
                 highest_entry_order = max(order.price for order in existing_entry_orders)
 
                 support_records = self.dca_plugin.calculate_support_prices(symbol=symbol,
@@ -139,8 +139,7 @@ class BigLongStrategy(AbstractBaseStrategy):
                                                                            maximum_price=current_price,
                                                                            dca_config=self.dca_config)
                 if len(support_records) == 0:
-                    logger.info(f'{symbol} {position_side.name}: There are no support records found, maintaining '
-                                f'existing grid')
+                    logger.info(f'{symbol} {position_side.name}: There are no support records found, maintaining existing grid')
                     return
                 highest_new_price = max(record.price for record in support_records)
 

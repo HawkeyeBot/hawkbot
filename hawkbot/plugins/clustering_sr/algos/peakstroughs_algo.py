@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 
@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 
 class PeaksTroughsAlgo(Algo):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, algo_config: Dict = None):
+        super().__init__(algo_config=algo_config)
         self.outer_price_warning_logged: bool = False
 
     def calculate_levels(self,

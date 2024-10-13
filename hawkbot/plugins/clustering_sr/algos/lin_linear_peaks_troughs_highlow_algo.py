@@ -20,8 +20,8 @@ class LinLinearPeaksTroughsHighLowAlgo(Algo):
     If no PT support/resistance available, simply keep the LOG level
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, algo_config: Dict = None):
+        super().__init__(algo_config=algo_config)
         self.troughs_cache: Dict[str, Dict[Timeframe, Set[Candle]]] = {}
         self.peaks_cache: Dict[str, Dict[Timeframe, Set[Candle]]] = {}
         self.cache_last_close_date: Dict[str, Dict[Timeframe, int]] = {}

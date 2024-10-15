@@ -553,6 +553,9 @@ class DcaPlugin(Plugin):
                                                                        symbol_information=symbol_information)
         elif dca_config.explicit_quantity_wallet_multiplier_list is not None:
             wallet_balance = self.exchange_state.symbol_balance(symbol)
+            maximum_cost = wallet_balance * wallet_exposure
+            logger.info(f"{symbol} {position_side.name}: Calculating quantities based on wallet balance {wallet_balance} and wallet exposure {wallet_exposure}, resulting in a "
+                        f"maximum cost of {maximum_cost}")
             if len(dca_config.explicit_quantity_wallet_multiplier_list) < len(level_prices):
                 raise InvalidConfigurationException(f"There were {len(dca_config.explicit_quantity_wallet_multiplier_list)} quantity multipliers, but only {len(level_prices)} "
                                                     f"prices were found/provided. This will result in an incomplete, as it can't provide a quantity for all orders. Please provide "
@@ -566,11 +569,11 @@ class DcaPlugin(Plugin):
 
             for i, quantity_multiplier in enumerate(dca_config.explicit_quantity_wallet_multiplier_list):
                 level_price = level_prices[i]
-                # quantity = wallet_balance / price
-                # wallet balance = 100
-                # price = 50
-                # quantity = 2
-                quantity = (wallet_balance * quantity_multiplier) / level_price
+                quantity = (maximum_cost * quantity_multiplier) / level_price
+                logger.info(f'{symbol} {position_side.name}: maximum_cost = {maximum_cost}, '
+                            f'quantity_multiplier = {quantity_multiplier}, '
+                            f'level_price = {level_price}, '
+                            f'quantity = {quantity}')
                 quantity_list.append(quantity)
             return quantity_list
         else:

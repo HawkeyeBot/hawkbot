@@ -134,7 +134,7 @@ class BigShortStrategy(AbstractBaseStrategy):
 
         if self.entry_order_type == 'LIMIT':
             existing_entry_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=position_side)
-            if len(existing_entry_orders) >= self.dca_config.nr_clusters:
+            if len(existing_entry_orders) >= self.dca_config.expected_nr_orders:
                 lowest_entry_order = min(order.price for order in existing_entry_orders)
 
                 resistance_records = self.dca_plugin.calculate_resistance_prices(symbol=symbol,

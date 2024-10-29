@@ -56,7 +56,6 @@ class StoplossPlugin(Plugin):
                                'stoploss_sell_distance_price_steps',
                                'grid_range',
                                'nr_orders',
-                               'post_stoploss_mode',
                                'custom_trigger_price_enabled',
                                'last_entry_trigger_distance',
                                'wallet_exposure_threshold',
@@ -76,6 +75,9 @@ class StoplossPlugin(Plugin):
         if 'upnl_total_wallet_trigger_threshold' in stoploss_dict:
             stoploss_config.upnl_total_wallet_trigger_threshold = abs(
                 stoploss_dict['upnl_total_wallet_trigger_threshold'])
+
+        if 'post_stoploss_mode' in stoploss_dict:
+            stoploss_config.post_stoploss_mode = Mode[stoploss_dict['post_stoploss_mode']]
 
         if 'order_type' in stoploss_dict:
             stoploss_config.order_type = OrderType[stoploss_dict['order_type']]

@@ -22,8 +22,9 @@ class DynamicPriceChangePctFilter(Filter):
         super().__init__(bot=bot, name=name, filter_config=filter_config, redis_host=redis_host, redis_port=redis_port)
         self.exchange = None  # Injected by framework
         self.exchange_state: ExchangeState = None  # Injected by framework
-        self.min_absolute_price_change_pct_threshold: float = None
-        self.use_sorted_symbols_mean_average_pricechangepct: bool = None  # New boolean param
+        self.long_min_price_change_pct_threshold: float = None
+        self.short_min_price_change_pct_threshold: float = None
+        self.use_sorted_symbols_mean_average_pricechangepct: bool = None
         self.redis = Redis(host=redis_host, port=redis_port, decode_responses=True)
         self.init_config(self.filter_config)
 
@@ -32,11 +33,14 @@ class DynamicPriceChangePctFilter(Filter):
     def init_config(self, filter_config):
         fill_optional_parameters(target=self,
                                  config=filter_config,
-                                 optional_parameters=['min_absolute_price_change_pct_threshold',
+                                 optional_parameters=['long_min_price_change_pct_threshold',
+                                                      'short_min_price_change_pct_threshold',
                                                       'use_sorted_symbols_mean_average_pricechangepct'])
 
-        if self.min_absolute_price_change_pct_threshold is None:
-            raise InvalidConfigurationException("The parameter 'min_absolute_price_change_pct_threshold' needs to be specified.")
+        if self.long_min_price_change_pct_threshold is None:
+            raise InvalidConfigurationException("The parameter 'long_min_price_change_pct_threshold' needs to be specified.")
+        if self.short_min_price_change_pct_threshold is None:
+            raise InvalidConfigurationException("The parameter 'short_min_price_change_pct_threshold' needs to be specified.")
         if self.use_sorted_symbols_mean_average_pricechangepct is None:
             raise InvalidConfigurationException("The parameter 'use_sorted_symbols_mean_average_pricechangepct' needs to be specified.")
 
@@ -52,16 +56,14 @@ class DynamicPriceChangePctFilter(Filter):
         total_price_change_pct = 0
         count = 0
 
-        # filter based on the absolute pricechangepct threshold
+        # filter based on separate thresholds for long and short
         for symbol in starting_list:
             pricechange_pct = changes[symbol].priceChangePct
 
-            if abs(pricechange_pct) < self.min_absolute_price_change_pct_threshold:
-                continue  # skip if pricechangepct is below the threshold
-
-            ordered_pricechangepct[pricechange_pct] = symbol
-            total_price_change_pct += pricechange_pct
-            count += 1
+            if pricechange_pct <= self.long_min_price_change_pct_threshold or pricechange_pct >= self.short_min_price_change_pct_threshold:
+                ordered_pricechangepct[pricechange_pct] = symbol
+                total_price_change_pct += pricechange_pct
+                count += 1
 
         # always sort desc
         ordered_pricechangepct = sorted(ordered_pricechangepct.items(), reverse=True)
@@ -72,8 +74,8 @@ class DynamicPriceChangePctFilter(Filter):
         filtered_list = {}
         redis_prefix = 'DynamicPriceChangePctFilter'
         for price_changepct, symbol in ordered_pricechangepct:
-            long = price_changepct < 0  # true if negative
-            short = price_changepct > 0  # true if is positive
+            long = price_changepct < self.long_min_price_change_pct_threshold
+            short = price_changepct > self.short_min_price_change_pct_threshold
             symbol_data = {
                 'priceChangePct': price_changepct,
                 'sorted_symbols_mean_average_pricechangepct': mean_average_price_change_pct,
@@ -82,8 +84,9 @@ class DynamicPriceChangePctFilter(Filter):
                 'use_sorted_symbols_mean_average_pricechangepct': int(self.use_sorted_symbols_mean_average_pricechangepct)
             }
             filtered_list[symbol] = symbol_data
+
             # store in redis
-            self.redis.hmset(f'{redis_prefix}_filtered_symbol_{symbol}', symbol_data)
+            self.redis.hset(f'{redis_prefix}_filtered_symbol_{symbol}', mapping=symbol_data)
 
         logger.info(f'selected list: {filtered_list}')
         return filtered_list

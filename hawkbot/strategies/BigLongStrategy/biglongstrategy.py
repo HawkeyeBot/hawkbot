@@ -29,6 +29,7 @@ class BigLongStrategy(AbstractBaseStrategy):
         self.no_entry_within_resistance_algo: Algo = None
         self.repost_lower_allowed: bool = True
         self.execute_orders_enabled: bool = True
+        self.max_simultaneous_positions_allowed: int = None
         self.redis = None
 
     def init_config(self):
@@ -40,7 +41,8 @@ class BigLongStrategy(AbstractBaseStrategy):
                                'no_entry_within_resistance_nr_clusters',
                                'override_insufficient_grid_funds',
                                'repost_lower_allowed',
-                               'execute_orders_enabled']
+                               'execute_orders_enabled',
+                               'max_simultaneous_positions_allowed']
         fill_optional_parameters(target=self, config=self.strategy_config, optional_parameters=optional_parameters)
 
         if 'no_entry_within_resistance_timeframe' in self.strategy_config:
@@ -105,6 +107,9 @@ class BigLongStrategy(AbstractBaseStrategy):
                 self.redis.set(name=f'{DynamicEntrySelector.DEACTIVATABLE_SYMBOL_POSITIONSIDE}_{symbol}_{self.position_side.name}', value=int(True))
                 return
         self.redis.set(name=f'{DynamicEntrySelector.DEACTIVATABLE_SYMBOL_POSITIONSIDE}_{symbol}_{self.position_side.name}', value=int(False))
+
+        if self.max_positions_exceeded() is True:
+            return
 
         if self.hedge_plugin.is_hedge_applicable(symbol=symbol, position_side=position_side, hedge_config=self.hedge_config):
             existing_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=position_side)
@@ -269,6 +274,18 @@ class BigLongStrategy(AbstractBaseStrategy):
         elif len(limit_orders) > 0:
             logger.info(f'{symbol} {position_side.name}: Order execution is explicitly disabled in the config')
 
+    def max_positions_exceeded(self) -> bool:
+        if self.max_simultaneous_positions_allowed is not None:
+            nr_open_positions = self.exchange_state.count_open_positions()
+            if nr_open_positions >= self.max_simultaneous_positions_allowed:
+                if self.exchange_state.has_open_position(symbol=self.symbol, position_side=self.position_side):
+                    # always allow processing if the symbol of this strategy has an open position
+                    return True
+                logger.info(f'{self.symbol} {self.position_side.name}: Blocking entry because nr of open positions {nr_open_positions} exceeds specified maximum simultaneous '
+                            f'positions allowed {self.max_simultaneous_positions_allowed}')
+                return True
+        return False
+
     def price_within_resistance_distance(self, symbol: str, position_side: PositionSide,
                                          current_price: float) -> bool:
         if self.no_entry_within_resistance_distance is None:
@@ -318,3 +335,19 @@ class BigLongStrategy(AbstractBaseStrategy):
                         f'which is more than the specified no_entry_within_resistance_distance '
                         f'{readable_pct(self.no_entry_within_resistance_distance, 2)}')
             return False
+
+    def on_pulse(self,
+                 symbol: str,
+                 position: Position,
+                 symbol_information: SymbolInformation,
+                 wallet_balance: float,
+                 current_price: float):
+        super().on_pulse(symbol=symbol,
+                         position=position,
+                         symbol_information=symbol_information,
+                         wallet_balance=wallet_balance,
+                         current_price=current_price)
+        if self.max_positions_exceeded() and position.no_position():
+            open_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=self.position_side)
+            logger.info(f'{symbol} {self.position_side.name}: Cancelling {len(open_orders)} open orders because nr of allowed open positions is exceeded')
+            self.enforce_grid(new_orders=[], exchange_orders=open_orders)

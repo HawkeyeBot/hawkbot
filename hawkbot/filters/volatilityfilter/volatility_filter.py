@@ -2,8 +2,7 @@ import logging
 from typing import List, Dict
 
 from hawkbot.core.candlestore.candlestore import Candlestore
-from hawkbot.core.data_classes import SymbolPositionSide, Timeframe, ExchangeState, FilterResult
-from hawkbot.core.model import PositionSide
+from hawkbot.core.data_classes import Timeframe, ExchangeState, FilterResult
 from hawkbot.exceptions import InvalidConfigurationException
 from hawkbot.exchange.exchange import Exchange
 from hawkbot.core.filters.filter import Filter
@@ -62,22 +61,17 @@ class VolatilityFilter(Filter):
                                                 "be greater than 0")
 
     def filter_symbols(self,
-                       starting_list: List[SymbolPositionSide],
+                       starting_list: List[str],
                        first_filter: bool,
-                       position_side: PositionSide,
-                       previous_filter_results: List[FilterResult]) -> Dict[SymbolPositionSide, Dict]:
+                       previous_filter_results: List[FilterResult]) -> Dict[str, Dict]:
         volatile_symbols = {}
         all_current_prices = self.exchange.fetch_all_current_prices()
         if first_filter:
-            symbols_to_process = [SymbolPositionSide(symbol=symbol, position_side=position_side)
-                                  for symbol in self.exchange_state.get_all_symbol_informations_by_symbol().keys()]
+            symbols_to_process = self.exchange_state.get_all_symbol_informations_by_symbol().keys()
         else:
             symbols_to_process = starting_list
 
-        for symbol_positionside in symbols_to_process:
-            symbol = symbol_positionside.symbol
-            position_side = symbol_positionside.position_side
-
+        for symbol in symbols_to_process:
             add_symbol = False
             reference_candles = self.candle_store.get_last_candles(symbol=symbol,
                                                                    timeframe=self.reference_timeframe,
@@ -94,20 +88,20 @@ class VolatilityFilter(Filter):
                     price_percentage_change = price_ratio_change * 100
 
                     if price_ratio_change >= self.positive_threshold:
-                        logger.info(f"{symbol} {position_side}: ADDING {symbol} to volatile symbols for potential "
+                        logger.info(f"{symbol}: Adding to volatile symbols for potential "
                                     f"entry, price changed {price_percentage_change:.3f}% from the lowest low price "
                                     f"of {lowest_low} in the past {self.reference_candle_nr} candles of "
                                     f"{self.reference_timeframe.name} (last close: {last_candle_close_date}), current "
                                     f"price {new_price} is ABOVE the positive threshold {threshold_percentage}%")
                         add_symbol = True
                     else:
-                        logger.info(f"{symbol} {position_side}: NOT ADDING {symbol} to volatile symbols for potential "
+                        logger.info(f"{symbol}: Not Adding to volatile symbols for potential "
                                     f"entry, price changed {price_percentage_change:.3f}% from the lowest low price "
                                     f"of {lowest_low} in the past {self.reference_candle_nr} candles of "
                                     f"{self.reference_timeframe.name} (last close: {last_candle_close_date}), current "
                                     f"price {new_price} is BELOW the positive threshold {threshold_percentage}%")
                 else:
-                    logger.info(f"{symbol} {position_side.name}: NOT ADDING {symbol} to volatile symbols for potential "
+                    logger.info(f"{symbol}: Not Adding to volatile symbols for potential "
                                 f"entry, price did not change between lowest low {lowest_low} and {new_price} in the "
                                 f"past {self.reference_candle_nr} candles of {self.reference_timeframe.name} "
                                 f"(last close: {last_candle_close_date})")
@@ -120,26 +114,26 @@ class VolatilityFilter(Filter):
                     price_percentage_change = price_ratio_change * 100
 
                     if price_ratio_change <= self.negative_threshold:
-                        logger.info(f"{symbol} {position_side}: ADDING {symbol} to volatile symbols for potential "
+                        logger.info(f"{symbol}: Adding to volatile symbols for potential "
                                     f"entry, price changed {price_percentage_change:.3f}% from the highest high price "
                                     f"of {highest_high} in the past {self.reference_candle_nr} candles of "
                                     f"{self.reference_timeframe.name} (last close: {last_candle_close_date}), current "
                                     f"price {new_price} is ABOVE the negative threshold {threshold_percentage}%")
                         add_symbol = True
                     else:
-                        logger.info(f"{symbol} {position_side}: NOT ADDING {symbol} to volatile symbols for potential "
+                        logger.info(f"{symbol}: Not Adding to volatile symbols for potential "
                                     f"entry, price changed {price_percentage_change:.3f}% from the highest high price "
                                     f"of {highest_high} in the past {self.reference_candle_nr} candles of "
                                     f"{self.reference_timeframe.name} (last close: {last_candle_close_date}), current "
                                     f"price {new_price} is BELOW the negative threshold {threshold_percentage}%")
                 else:
-                    logger.info(f"{symbol} {position_side.name}: NOT ADDING {symbol} to volatile symbols for potential "
+                    logger.info(f"{symbol}: Not Adding to volatile symbols for potential "
                                 f"entry, price did not change between highest high {highest_high} and {new_price} in "
                                 f"the past {self.reference_candle_nr} candles of {self.reference_timeframe.name} "
                                 f"(last close: {last_candle_close_date})")
 
             if add_symbol:
-                volatile_symbols[symbol_positionside] = symbol_positionside \
-                    if symbol_positionside in starting_list else {}
+                volatile_symbols[symbol] = symbol \
+                    if symbol in starting_list else {}
 
         return volatile_symbols

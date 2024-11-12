@@ -522,6 +522,8 @@ class DcaPlugin(Plugin):
                          f'quantities')
             return []
         if dca_config.ratio_power is not None:
+            if nr_clusters is None and len(level_prices) > 0:
+                nr_clusters = len(level_prices)
             if dca_config.maximum_position_coin_size is not None:
                 max_size = dca_config.maximum_position_coin_size
             else:

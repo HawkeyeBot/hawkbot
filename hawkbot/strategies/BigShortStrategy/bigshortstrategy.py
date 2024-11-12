@@ -30,6 +30,9 @@ class BigShortStrategy(AbstractBaseStrategy):
         self.repost_higher_allowed: bool = True
         self.execute_orders_enabled: bool = True
         self.max_simultaneous_positions_allowed: int = None
+        self.spike_detection_timeframe: Timeframe = None
+        self.spike_detection_nr_candles: int = None
+        self.spike_detection_block_entry_threshold: float = None
         self.redis = None
 
     def init_config(self):
@@ -41,7 +44,9 @@ class BigShortStrategy(AbstractBaseStrategy):
                                'override_insufficient_grid_funds',
                                'repost_higher_allowed',
                                'execute_orders_enabled',
-                               'max_simultaneous_positions_allowed']
+                               'max_simultaneous_positions_allowed',
+                               'spike_detection_nr_candles',
+                               'spike_detection_block_entry_threshold']
         fill_optional_parameters(target=self, config=self.strategy_config, optional_parameters=optional_parameters)
 
         if 'no_entry_within_support_timeframe' in self.strategy_config:
@@ -84,8 +89,18 @@ class BigShortStrategy(AbstractBaseStrategy):
                                                 f'\'limit_orders_reissue_threshold\' is mandatory when using '
                                                 f'\'entry_order_type\' LIMIT orders but is not specified')
 
-        if 'override_insufficient_grid_funds' in self.strategy_config:
-            self.override_insufficient_grid_funds = self.strategy_config['override_insufficient_grid_funds']
+        if 'spike_detection_timeframe' in self.strategy_config:
+            self.spike_detection_timeframe = Timeframe.parse(self.strategy_config["spike_detection_timeframe"])
+
+        if self.spike_detection_timeframe is not None or \
+                self.spike_detection_nr_candles is not None or \
+                self.spike_detection_block_entry_threshold is not None:
+            if self.spike_detection_timeframe is None or \
+                    self.spike_detection_nr_candles is None or \
+                    self.spike_detection_block_entry_threshold is None:
+                raise InvalidConfigurationException(f'{self.symbol} {self.position_side.name}: Not all of the parameters \'spike_detection_timeframe\', '
+                                                    f'\'spike_detection_nr_candles\' and \'spike_detection_block_entry_threshold\' are filled. If one of these are filled, all of '
+                                                    f'these parameters are expected')
 
     def get_initializing_config(self) -> InitializeConfig:
         init_config = super().get_initializing_config()
@@ -112,6 +127,9 @@ class BigShortStrategy(AbstractBaseStrategy):
         self.redis.set(name=f'{DynamicEntrySelector.DEACTIVATABLE_SYMBOL_POSITIONSIDE}_{symbol}_{self.position_side.name}', value=int(False))
 
         if self.max_positions_exceeded() is True:
+            return
+
+        if self.block_because_spike_detected(symbol=symbol, current_price=current_price) is True:
             return
 
         if self.hedge_plugin.is_hedge_applicable(symbol=symbol, position_side=position_side, hedge_config=self.hedge_config):
@@ -281,11 +299,11 @@ class BigShortStrategy(AbstractBaseStrategy):
 
     def max_positions_exceeded(self) -> bool:
         if self.max_simultaneous_positions_allowed is not None:
+            if self.exchange_state.has_open_position(symbol=self.symbol, position_side=self.position_side):
+                # always allow processing if the symbol of this strategy has an open position
+                return False
             nr_open_positions = self.exchange_state.count_open_positions()
             if nr_open_positions >= self.max_simultaneous_positions_allowed:
-                if self.exchange_state.has_open_position(symbol=self.symbol, position_side=self.position_side):
-                    # always allow processing if the symbol of this strategy has an open position
-                    return True
                 logger.info(f'{self.symbol} {self.position_side.name}: Blocking entry because nr of open positions {nr_open_positions} exceeds specified maximum simultaneous '
                             f'positions allowed {self.max_simultaneous_positions_allowed}')
                 return True
@@ -343,7 +361,6 @@ class BigShortStrategy(AbstractBaseStrategy):
                         f'{readable_pct(self.no_entry_within_support_distance, 2)}')
             return False
 
-
     def on_pulse(self,
                  symbol: str,
                  position: Position,
@@ -360,3 +377,23 @@ class BigShortStrategy(AbstractBaseStrategy):
             logger.info(f'{symbol} {self.position_side.name}: Cancelling {len(open_orders)} open orders because nr of allowed open positions is exceeded')
             self.enforce_grid(new_orders=[], exchange_orders=open_orders)
 
+    def block_because_spike_detected(self,
+                                     symbol: str,
+                                     current_price: float) -> bool:
+        if self.spike_detection_timeframe is None:
+            return False
+
+        candles = self.candlestore_client.get_last_candles(symbol=symbol,
+                                                           timeframe=self.spike_detection_timeframe,
+                                                           amount=self.spike_detection_nr_candles)
+        lowest_candle_high = min([c.high for c in candles])
+        if current_price <= lowest_candle_high * (1 + self.spike_detection_block_entry_threshold):
+            logger.info(f"{symbol} {self.position_side.name}: BLOCKING entry because current price {current_price} is less than "
+                        f"{readable_pct(self.spike_detection_block_entry_threshold, 2)} from last {self.spike_detection_nr_candles} candles' lowest high "
+                        f"{lowest_candle_high}")
+            return True
+        else:
+            logger.info(f"{symbol} {self.position_side.name}: ALLOWING entry because current price {current_price} is more than "
+                        f"{readable_pct(self.spike_detection_block_entry_threshold, 2)} from last {self.spike_detection_nr_candles} candles' lowest high "
+                        f"{lowest_candle_high}")
+            return False

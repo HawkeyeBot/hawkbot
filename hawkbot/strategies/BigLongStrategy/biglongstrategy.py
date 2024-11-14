@@ -231,6 +231,8 @@ class BigLongStrategy(AbstractBaseStrategy):
                                    f'1) increase the exposed balance to (roughly) a minimum of {required_balance} by having a bigger wallet_exposure_ratio, or adding equity if '
                                    f'you want to maintain the same settings, 2) reduce the number of clusters, 3) reduce the DCA strength (ratio power, quantity multiplier or '
                                    f'desired position distance), 4) force the bot to run with an incomplete grid by setting \'override_insufficient_grid_funds\' to true')
+                    open_orders = self.exchange_state.all_open_orders(symbol=symbol, position_side=PositionSide.BOTH)
+                    self.order_executor.cancel_orders(open_orders)
                     return
 
             if self.entry_order_type == 'MARKET' and price_index == 0:

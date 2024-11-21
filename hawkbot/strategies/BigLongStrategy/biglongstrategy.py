@@ -299,14 +299,16 @@ class BigLongStrategy(AbstractBaseStrategy):
 
     def max_positions_exceeded(self) -> bool:
         if self.max_simultaneous_positions_allowed is not None:
-            if self.exchange_state.has_open_position(symbol=self.symbol, position_side=self.position_side):
-                # always allow processing if the symbol of this strategy has an open position
-                return False
             nr_open_positions = self.exchange_state.count_open_positions()
             if nr_open_positions >= self.max_simultaneous_positions_allowed:
-                logger.info(f'{self.symbol} {self.position_side.name}: Blocking entry because nr of open positions {nr_open_positions} exceeds specified maximum simultaneous '
-                            f'positions allowed {self.max_simultaneous_positions_allowed}')
-                return True
+                if self.exchange_state.has_open_position(symbol=self.symbol, position_side=self.position_side):
+                    # always allow processing if the symbol of this strategy has an open position
+                    logger.info(f'{self.symbol} {self.position_side.name}: Not blocking entry because this is one of the open positions')
+                    return False
+                else:
+                    logger.info(f'{self.symbol} {self.position_side.name}: Blocking entry because nr of open positions {nr_open_positions} exceeds specified maximum simultaneous '
+                                f'positions allowed {self.max_simultaneous_positions_allowed}')
+                    return True
         return False
 
     def price_within_resistance_distance(self, symbol: str, position_side: PositionSide,
@@ -370,7 +372,7 @@ class BigLongStrategy(AbstractBaseStrategy):
                          symbol_information=symbol_information,
                          wallet_balance=wallet_balance,
                          current_price=current_price)
-        if self.max_positions_exceeded() and position.no_position():
+        if self.max_positions_exceeded() and not self.exchange_state.has_open_position(symbol=symbol, position_side=self.position_side):
             open_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=self.position_side)
             logger.info(f'{symbol} {self.position_side.name}: Cancelling {len(open_orders)} open orders because nr of allowed open positions is exceeded')
             self.enforce_grid(new_orders=[], exchange_orders=open_orders)

@@ -191,7 +191,13 @@ class TpPlugin(Plugin):
                                                                  current_price=current_price,
                                                                  tp_config=tp_config)
             if trailing_tp_order is not None:
-                all_tp_orders.append(trailing_tp_order)
+                if self.trailing_tp_valid(symbol=position.symbol,
+                                          trailing_tp_order=trailing_tp_order,
+                                          position=position,
+                                          position_side=position_side,
+                                          symbol_information=symbol_information,
+                                          current_price=current_price):
+                    all_tp_orders.append(trailing_tp_order)
 
         if len(all_tp_orders) > 0:
             return all_tp_orders
@@ -214,6 +220,32 @@ class TpPlugin(Plugin):
             all_tp_orders.extend(static_tp_orders)
 
         return all_tp_orders
+
+    def trailing_tp_valid(self,
+                          symbol: str,
+                          trailing_tp_order: Order,
+                          position: Position,
+                          position_side: PositionSide,
+                          symbol_information: SymbolInformation,
+                          current_price: float) -> bool:
+        if position.position_size > trailing_tp_order.quantity:
+            logger.info(f'{symbol} {position_side.name}: Invalidated trailing TP order because order quantity {trailing_tp_order.quantity} is less than position size '
+                        f'{position.position_size}')
+            return False
+        if position_side is PositionSide.LONG:
+            threshold = trailing_tp_order.price - (3 * symbol_information.price_step)
+            if current_price < threshold:
+                logger.info(f'{symbol} {position_side.name}: Invalidated trailing TP order because current price {current_price} is below threshold {threshold} for order '
+                            f'{trailing_tp_order}')
+                return False
+        elif position_side is PositionSide.SHORT:
+            threshold = trailing_tp_order.price + (3 * symbol_information.price_step)
+            if current_price > threshold:
+                logger.info(f'{symbol} {position_side.name}: Invalidated trailing TP order because current price {current_price} is above threshold {threshold} for order '
+                            f'{trailing_tp_order}')
+                return False
+
+        return True
 
     def calculate_upnl_tp_order(self,
                                 symbol: str,

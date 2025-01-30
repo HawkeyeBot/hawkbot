@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.24">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6543a935.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.a40c8224.min.css">
       
       
 
@@ -45,7 +45,7 @@
     
       <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,7 +82,7 @@
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -102,7 +102,7 @@
     </div>
     
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
@@ -580,15 +580,16 @@
 
 
 <a id="hawkbot.plugins.hedge_plugin"></a>
-  <div class="doc doc-contents first">
-  
-      <p>The hedge plugin can be used to use a different grid configuration when a position gets stuck on one side. The idea behind this is that
+    <div class="doc doc-contents first">
+
+        <p>The hedge plugin can be used to use a different grid configuration when a position gets stuck on one side. The idea behind this is that
 this will allow for faster entries to mitigate the stuck position by opening a position on the opposite positionside. Be aware that if
 done incorrectly, you risk getting stuck in reverse.</p>
 <p>The hedge plugin can be nicely combined with the Multisymbol autoreduce plugin, as it will enter faster and then use those profits for
 breaking down the stuck position.</p>
 <p>Note that while this plugin is parsed in the AbstractBaseStrategy, the usage is enforced in the BigLongStrategy and BigShortStrategy, as
 these process the NO_OPEN_POSITION trigger.</p>
+
 
 <details class="example" open>
   <summary>Activate on stuck</summary>
@@ -606,80 +607,85 @@ it will place a grid 4% wide with 4 orders::</p>
 </code></pre></div>
 </details>
 
-
-  <p><span class="doc-section-title">Attributes:</span></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr class="doc-section-item">
-          <td><code><span title="hawkbot.plugins.hedge_plugin.enabled">enabled</span></code></td>
-          <td>
-                <code>bool</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>indicates if the plugin is enabled or not. If not specified, the value is true by default if there is a 'hedge' block present in the strategy config, otherwise
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="hawkbot.plugins.hedge_plugin.enabled">enabled</span></code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>indicates if the plugin is enabled or not. If not specified, the value is true by default if there is a 'hedge' block present in the strategy config, otherwise
      the default is false</p>
-            </div>
-          </td>
-        </tr>
-        <tr class="doc-section-item">
-          <td><code><span title="hawkbot.plugins.hedge_plugin.first_order_type">first_order_type</span></code></td>
-          <td>
-                <code>str = LIMIT</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>specifies if the first order should be a limit order or a market order. Be aware that market orders are more expensive, but will guarantee
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="hawkbot.plugins.hedge_plugin.first_order_type">first_order_type</span></code></td>
+            <td>
+                  <code>str = LIMIT</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>specifies if the first order should be a limit order or a market order. Be aware that market orders are more expensive, but will guarantee
                     entry whereas limit orders are cheaper but may miss entry during fast moves</p>
-            </div>
-          </td>
-        </tr>
-        <tr class="doc-section-item">
-          <td><code><span title="hawkbot.plugins.hedge_plugin.activate_hedge_above_wallet_exposure_pct">activate_hedge_above_wallet_exposure_pct</span></code></td>
-          <td>
-                <code>float</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>activate the hedge plugin when the wallet exposure is bigger than this percentage of the
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="hawkbot.plugins.hedge_plugin.activate_hedge_above_wallet_exposure_pct">activate_hedge_above_wallet_exposure_pct</span></code></td>
+            <td>
+                  <code>float</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>activate the hedge plugin when the wallet exposure is bigger than this percentage of the
                                             total exposed balance</p>
-            </div>
-          </td>
-        </tr>
-        <tr class="doc-section-item">
-          <td><code><span title="hawkbot.plugins.hedge_plugin.activate_hedge_above_upnl_pct">activate_hedge_above_upnl_pct</span></code></td>
-          <td>
-                <code>float</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>activate the hedge plugin when the UPNL percentage exceeds this amount</p>
-            </div>
-          </td>
-        </tr>
-        <tr class="doc-section-item">
-          <td><code><span title="hawkbot.plugins.hedge_plugin.dca_config">dca_config</span></code></td>
-          <td>
-                <code>DcaConfig</code>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              <p>specifies an alternate configuration for the grid to use when the hedge plugin is activated. For more information
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="hawkbot.plugins.hedge_plugin.activate_hedge_above_upnl_pct">activate_hedge_above_upnl_pct</span></code></td>
+            <td>
+                  <code>float</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>activate the hedge plugin when the UPNL percentage exceeds this amount</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="hawkbot.plugins.hedge_plugin.dca_config">dca_config</span></code></td>
+            <td>
+                  <code>DcaConfig</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>specifies an alternate configuration for the grid to use when the hedge plugin is activated. For more information
                 on the configuration options for this block, please check the DCA plugin documentation</p>
-            </div>
-          </td>
-        </tr>
-    </tbody>
-  </table>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
-  
+
+
+
+
+
+
+
 
   <div class="doc doc-children">
 
@@ -695,7 +701,7 @@ it will place a grid 4% wide with 4 orders::</p>
 
   </div>
 
-  </div>
+    </div>
 
 </div>
 
@@ -744,10 +750,10 @@ it will place a grid 4% wide with 4 orders::</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.081f42fc.min.js"></script>
+      <script src="../../assets/javascripts/bundle.60a45f97.min.js"></script>
       
     
   </body>

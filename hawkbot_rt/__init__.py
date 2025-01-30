@@ -1,4 +1,4 @@
-# Pyarmor 8.5.9 (pro), 005619, 2024-11-24T20:39:41.177085
+# Pyarmor 8.5.12 (pro), 005619, 2025-01-30T08:52:49.241856
 from sys import version_info as py_version
 def __pyarmor__():
     import platform
@@ -7,7 +7,7 @@ def __pyarmor__():
 
     def format_system():
         plat = platform.system().lower()
-        plat = ('windows' if plat.startswith('cygwin') else
+        plat = ('cygwin' if plat.startswith('cygwin') else
                 'linux' if plat.startswith('linux') else
                 'freebsd' if plat.startswith(
                     ('freebsd', 'openbsd', 'isilon onefs')) else plat)
@@ -31,7 +31,11 @@ def __pyarmor__():
             ('armv6', ('armv6l',)),
             ('armv7', ('armv7l',)),
             ('aarch32', ('aarch32',)),
-            ('aarch64', ('aarch64', 'arm64'))
+            ('aarch64', ('aarch64', 'arm64')),
+            ('ppc64le', ('ppc64le',)),
+            ('mips32el', ('mipsel', 'mips32el')),
+            ('mips64el', ('mips64el',)),
+            ('riscv64', ('riscv64',)),
         )
         for alias, archlist in arch_table:
             if mach in archlist:

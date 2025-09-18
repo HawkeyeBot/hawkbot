@@ -54,6 +54,7 @@ class AbstractBaseStrategy(Strategy):
         self.mode_on_price_outside_boundaries: Mode = None
         self.minimum_number_of_available_dcas: int = 3
         self.cancel_orders_on_position_close: bool = True
+        self.cancel_no_position_open_orders_on_shutdown: bool = True
         self.strategy_last_execution: int = 0
 
     def init(self):
@@ -71,6 +72,8 @@ class AbstractBaseStrategy(Strategy):
             self.minimum_number_of_available_dcas = self.strategy_config['minimum_number_of_available_dcas']
         if 'cancel_orders_on_position_close' in self.strategy_config:
             self.cancel_orders_on_position_close = self.strategy_config['cancel_orders_on_position_close']
+        if 'cancel_no_position_open_orders_on_shutdown' in self.strategy_config:
+            self.cancel_no_position_open_orders_on_shutdown = self.strategy_config['cancel_no_position_open_orders_on_shutdown']
 
         if 'dca' in self.strategy_config:
             self.dca_config = self.dca_plugin.parse_config(self.strategy_config['dca'])
@@ -248,6 +251,9 @@ class AbstractBaseStrategy(Strategy):
                     symbol_information: SymbolInformation,
                     wallet_balance: float,
                     current_price: float):
+        if self.cancel_no_position_open_orders_on_shutdown is False:
+            return
+
         if self.position_side == PositionSide.BOTH:
             if not self.exchange_state.has_open_position(symbol=symbol, position_side=PositionSide.BOTH):
                 user_log.info(f'{symbol} {PositionSide.BOTH.name}: During deactivation, there were open orders detected '
@@ -807,7 +813,7 @@ class AbstractBaseStrategy(Strategy):
                 logger.info(f'{symbol} {self.position_side.name}: TP orders enforced, new TP orders: {new_tp_orders}, exchange_orders: {open_tp_orders}')
             return orders_changed
         else:
-            logger.info(f'{symbol} {self.position_side.name}: No TP orders to be created according to plugin')
+            logger.debug(f'{symbol} {self.position_side.name}: No TP orders to be created according to plugin')
 
     def enforce_tp_refill(self,
                           symbol: str,

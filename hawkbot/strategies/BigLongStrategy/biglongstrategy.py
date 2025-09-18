@@ -260,6 +260,7 @@ class BigLongStrategy(AbstractBaseStrategy):
             limit_orders.append(order)
 
         if len(limit_orders) == 0:
+            logger.info(f'{symbol} {position_side.name}: Calculated 0 limit orders, not placing new orders')
             return
 
         if self.stoploss_config.enabled is True and (

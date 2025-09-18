@@ -23,6 +23,9 @@ class StaticTpConfig:
 @dataclass
 class TpConfig:
     enabled: bool = field(default_factory=lambda: True)
+    # static TP price
+    fixed_tp_price: float = field(default=None)
+
     # static TP grid
     minimum_tp: float = field(default=None)
     maximum_tp_orders: int = 1
@@ -72,6 +75,7 @@ class TpPlugin(Plugin):
             return tp_config
 
         optional_parameters = ['enabled',
+                               'fixed_tp_price',
                                'minimum_tp',
                                'maximum_tp_orders',
                                'tp_interval',
@@ -161,7 +165,7 @@ class TpPlugin(Plugin):
                                                 'not support both parameters simultaneously. Please fix this by '
                                                 'removing one of the two config sections.')
 
-        if tp_config.tp_at_upnl_pct is not None and tp_config.minimum_tp is not None:
+        if tp_config.tp_at_upnl_pct is not None and tp_config.minimum_tp is not None and tp_config.fixed_tp_price is None:
             raise InvalidConfigurationException(
                 'Both parameters \"tp_at_upnl_pct\" and \"minimum_tp\" are set, but the '
                 'TP plugin does not support both parameters simultaneously. Please fix '
@@ -451,13 +455,17 @@ class TpPlugin(Plugin):
         logger.debug(f'{symbol} {position_side.name}: Current position price = {position.entry_price}, quantity = {position.position_size}, current price = {current_price}')
 
         orders = []
-        if position.position_side == PositionSide.LONG:
-            starting_price = position.entry_price * (1 + minimum_tp)
-        elif position.position_side == PositionSide.SHORT:
-            starting_price = position.entry_price * (1 - minimum_tp)
+        if tp_config.fixed_tp_price is not None:
+            maximum_tp_orders = 1
+            starting_price = tp_config.fixed_tp_price
         else:
-            raise UnsupportedParameterException(f'{symbol} {position_side.name}: Only position sides LONG and SHORT '
-                                                f'are currently supported')
+            if position.position_side == PositionSide.LONG:
+                starting_price = position.entry_price * (1 + minimum_tp)
+            elif position.position_side == PositionSide.SHORT:
+                starting_price = position.entry_price * (1 - minimum_tp)
+            else:
+                raise UnsupportedParameterException(f'{symbol} {position_side.name}: Only position sides LONG and SHORT '
+                                                    f'are currently supported')
         starting_price = round_(number=starting_price, step=symbol_information.price_step)
         logger.debug(f'{symbol} {position_side.name}: Initial starting price = {starting_price}')
 

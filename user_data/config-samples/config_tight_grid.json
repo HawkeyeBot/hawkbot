@@ -27,8 +27,9 @@
             "tp_interval": 0.0015
           },
           "stoploss": {
-            "upnl_exposed_wallet_threshold": 0.028,
-            "post_stoploss_mode": "GRACEFUL_STOP"
+            "upnl_exposed_wallet_trigger_threshold": 0.028,
+            "post_stoploss_mode": "GRACEFUL_STOP",
+            "order_type": "STOP_MARKET"
           }
         }
       },
@@ -53,8 +54,9 @@
             "tp_interval": 0.0015
           },
           "stoploss": {
-            "upnl_exposed_wallet_threshold": 0.02,
-            "post_stoploss_mode": "GRACEFUL_STOP"
+            "upnl_exposed_wallet_trigger_threshold": 0.02,
+            "post_stoploss_mode": "GRACEFUL_STOP",
+            "order_type": "STOP_MARKET"
           }
         }
       }

@@ -648,8 +648,9 @@ class Strategy(object):
             else:
                 symbol = exchange_orders[0].symbol
                 position_side = exchange_orders[0].position_side
-            logger.info(f'{symbol} {position_side.name}: Enforcing grid, on_exchange = {exchange_orders}, '
-                        f'new_orders = {new_orders}, current price = {self.exchange_state.last_tick_price(symbol)}')
+            if self.config.log_order_difference is True:
+                logger.info(f'{symbol} {position_side.name}: Enforcing grid, on_exchange = {exchange_orders}, '
+                            f'new_orders = {new_orders}, current price = {self.exchange_state.last_tick_price(symbol)}')
 
             if cancel_before_create is True:
                 try:

@@ -59,7 +59,12 @@ kiteconnect==4.2.0
 pyotp==2.9.0
 Werkzeug==2.2.2
 pycryptodome==3.20.0
-cryptofeed==2.4.0
+# cryptofeed has a clash with websockets version vs unicorn websocket version requirement.
+# the preferable way to solve this is by also upgrading unicorn, but unfortunately this
+# would mean imposing a (paid) licensed version of unicorn. If you want to use cryptfeed
+# in combination with binance, please use the ccxt-implementation of binance. In that case,
+# you can comment out the unicorn dependencies and enable this cryptofeed dependency.
+# cryptofeed==2.4.1
 plotly-resampler==0.10.0
 
 # TEMP!

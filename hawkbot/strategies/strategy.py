@@ -260,6 +260,13 @@ class Strategy(object):
         pass
 
     # to be implemented by strategy implementation
+    def on_new_filled_orders(self,
+                             symbol: str,
+                             symbol_information: SymbolInformation,
+                             new_filled_orders: List[Order]):
+        pass
+
+    # to be implemented by strategy implementation
     def on_stoploss_filled(self,
                            symbol: str,
                            position: Position,
@@ -350,7 +357,7 @@ class Strategy(object):
                      symbol_information=symbol_information,
                      wallet_balance=wallet_balance)
 
-    def process_trigger(self, symbol: str, triggers: List[Trigger]):
+    def process_trigger(self, symbol: str, triggers: List[Trigger], new_filled_orders: List[Order]):
         if self.exchange_state.is_initialized(symbol) is False:
             logger.debug(f"Service not initialized yet for symbol {symbol}")
             return
@@ -394,6 +401,11 @@ class Strategy(object):
                                  current_price=self.exchange_state.last_tick_price(symbol),
                                  new_mode=self.position_side_config.mode)
 
+        if len(new_filled_orders) > 0:
+            user_log.debug(f'{symbol} {self.position_side.name}: New filled orders detected', __name__)
+            self.on_new_filled_orders(symbol=symbol,
+                                      new_filled_orders=new_filled_orders,
+                                      symbol_information=symbol_information)
         if Trigger.STOPLOSS_FILLED in triggers:
             user_log.debug(f'{symbol} {self.position_side.name}: Received trigger STOPLOSS_FILLED', __name__)
             self.on_stoploss_filled(symbol=symbol,

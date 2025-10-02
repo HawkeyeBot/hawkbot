@@ -164,6 +164,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
 
             cost = price * quantity
             if sum_cost + cost >= exposed_balance:
+                logger.info(f'{self.symbol} {self.position_side.name}: Sum of cost {sum_cost + cost} exceeds exposed balance {exposed_balance}, not adding extra orders ({i})')
                 break
             else:
                 sum_cost += cost

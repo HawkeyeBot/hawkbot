@@ -183,7 +183,7 @@ class ManualScalpLongStrategy(AbstractBaseStrategy):
                                          reduce_only=False))
 
         open_entry_orders = self.exchange_state.open_entry_orders(symbol=self.symbol, position_side=self.position_side)
-        self.enforce_grid(new_orders=orders, exchange_orders=open_entry_orders, lowest_price_first=True)
+        # self.enforce_grid(new_orders=orders, exchange_orders=open_entry_orders, lowest_price_first=True)
 
     def _cancel_entry_orders(self, key_pressed):
         symbol = self.symbol

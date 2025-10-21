@@ -2,20 +2,27 @@ import logging
 from typing import List
 
 from hawkbot.core.data_classes import Trigger
-from hawkbot.core.model import Position, SymbolInformation, LimitOrder, OrderTypeIdentifier, Side, PositionSide, Order
+from hawkbot.core.model import Position, SymbolInformation, LimitOrder, OrderTypeIdentifier, OrderStatus, Order
+from hawkbot.core.time_provider import now_timestamp
+from hawkbot.exchange.exchange import Exchange
 from hawkbot.strategies.abstract_base_strategy import AbstractBaseStrategy
-from hawkbot.utils import round_, round_dn
+from hawkbot.utils import round_, calc_min_qty
 
 logger = logging.getLogger(__name__)
 
 
 class NewMultiPositionLongStrategy(AbstractBaseStrategy):
+    exchange: Exchange = None
+
     def __init__(self):
         super().__init__()
         self.cancel_orders_on_position_close = False
         self.cancel_no_position_open_orders_on_shutdown = False
 
         self.step_size = 0.00025
+        self.order_quantity = 400
+        self.nr_buy_orders_on_exhange = 20
+        self.nr_sell_orders_on_exhange = 20
 
     def on_new_filled_orders(self,
                              symbol: str,
@@ -57,56 +64,52 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
                           symbol_information: SymbolInformation,
                           wallet_balance: float,
                           current_price: float):
+        open_orders = self.exchange_state.all_open_orders(symbol=symbol, position_side=self.position_side)
+        latest_filled_orders = self.order_executor.exchange.fetch_orders(symbol=symbol, end_time=now_timestamp(), status=OrderStatus.FILLED)
+        last_timestamp = max([o.event_time for o in latest_filled_orders])
+        last_filled_order = [o for o in latest_filled_orders if o.event_time == last_timestamp][0]
+        logger.info(f'{symbol} {self.position_side.name}: Last filled order price = {last_filled_order.price}')
 
-        # check if a new entry order needs to be placed
+        new_orders = []
+        # last filled order was a buy, so the first next buy order should be a step below last filled price
+        for i in range(1, self.nr_buy_orders_on_exhange):
+            next_buy_price = round_(number=last_filled_order.price - (i * self.step_size), step=symbol_information.price_step)
+            quantity = calc_min_qty(price=next_buy_price,
+                                    inverse=False,
+                                    qty_step=symbol_information.quantity_step,
+                                    min_qty=symbol_information.minimum_quantity,
+                                    min_cost=symbol_information.minimal_buy_cost)
+            quantity = max(self.order_quantity, quantity)
+            new_orders.append(LimitOrder(
+                order_type_identifier=OrderTypeIdentifier.DCA,
+                symbol=symbol_information.symbol,
+                quantity=quantity,
+                side=self.position_side.increase_side(),
+                position_side=self.position_side,
+                price=float(f'{next_buy_price:f}')))
+            logger.debug(f'{symbol} {self.position_side.name}: Should place BUY order {quantity}@{next_buy_price:f}')
 
-        open_entry_orders = self.exchange_state.open_entry_orders(symbol=symbol, position_side=self.position_side)
-        xrp_balance = self.exchange_state.asset_balance('XRP')
-        usdt_balance = self.exchange_state.asset_balance('USDT')
-        # logger.info(f'{symbol} LONG: XRP balance = {xrp_balance}, USDT balance = {usdt_balance}')
-        # if xrp_balance < 1:
-        #     # place 1 entry order when there's no order at all on the exchange
-        #     # entry price = round current_price down to closest step size
-        #     entry_price = round_dn(current_price, self.step_size)
-        #
-        #     entry_order = LimitOrder(
-        #         order_type_identifier=OrderTypeIdentifier.ENTRY,
-        #         symbol=symbol_information.symbol,
-        #         quantity=1,
-        #         side=Side.BUY,
-        #         position_side=PositionSide.LONG,
-        #         initial_entry=False,
-        #         price=entry_price)
-        #     self.enforce_grid(new_orders=[entry_order], exchange_orders=open_entry_orders)
-        # else:
-        #     # we've got at least 1 order to be present, now we need to
-        #     pass
+        # last filled order was a buy, so the first next sell order should be a step above last filled price
+        for i in range(1, self.nr_sell_orders_on_exhange):
+            next_sell_price = last_filled_order.price + (i * self.step_size)
+            corresponding_buy_price = next_sell_price - (2 * self.step_size)
+            corresponding_buy_quantity = calc_min_qty(price=corresponding_buy_price,
+                                                      inverse=False,
+                                                      qty_step=symbol_information.quantity_step,
+                                                      min_qty=symbol_information.minimum_quantity,
+                                                      min_cost=symbol_information.minimal_buy_cost)
+            quantity = max(corresponding_buy_quantity, last_filled_order.quantity)
+            new_orders.append(LimitOrder(
+                order_type_identifier=OrderTypeIdentifier.TP,
+                symbol=symbol_information.symbol,
+                quantity=quantity,
+                side=self.position_side.decrease_side(),
+                position_side=self.position_side,
+                price=float(f'{next_sell_price:f}'),
+                reduce_only=True))
+            logger.debug(f'{symbol} {self.position_side.name}: Should place SELL order {quantity}@{next_sell_price:f}')
 
-    def on_entry_order_filled(self,
-                              symbol: str,
-                              position: Position,
-                              symbol_information: SymbolInformation,
-                              wallet_balance: float,
-                              current_price: float):
-        logger.info(f'{symbol} LONG: Entry order filled, placing backing TP order')
-        # place TP order against it
-        last_filled_price = self.exchange_state.last_filled_price(symbol=symbol,
-                                                                  position_side=PositionSide.LONG,
-                                                                  order_type_identifiers=OrderTypeIdentifier.ENTRY)
-        # place TP order at the next interval up from the filled price
-        tp_price = last_filled_price + self.step_size
-        order = LimitOrder(
-            order_type_identifier=OrderTypeIdentifier.TP,
-            symbol=symbol_information.symbol,
-            quantity=1,
-            side=Side.SELL,
-            position_side=PositionSide.LONG,
-            initial_entry=False,
-            price=tp_price,
-            reduce_only=True)
-
-        # self.order_executor.create_orders([order])
-        logger.info(f'{symbol} LONG: Placed TP order {order.quantity}@{order.price}')
+        self.enforce_grid(new_orders=new_orders, exchange_orders=open_orders)
 
     def log_trigger(self, trigger: Trigger) -> bool:
         return trigger not in [Trigger.PULSE, Trigger.WALLET_CHANGED, Trigger.PERIODIC_CHECK]

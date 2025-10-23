@@ -44,12 +44,18 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
                     reduce_only=True)
                 orders_to_add.append(order)
             else:
-                filled_price = filled_order.price
-                price = round_(number=filled_price - self.step_size, step=symbol_information.price_step) # for LONG, DCA price is lower
+                price = round_(number=filled_order.price - self.step_size, step=symbol_information.price_step) # for LONG, DCA price is lower
+                quantity = calc_min_qty(price=price,
+                                        inverse=False,
+                                        qty_step=symbol_information.quantity_step,
+                                        min_qty=symbol_information.minimum_quantity,
+                                        min_cost=symbol_information.minimal_buy_cost)
+                quantity = max(self.order_quantity, quantity)
+
                 order = LimitOrder(
                     order_type_identifier=OrderTypeIdentifier.DCA,
                     symbol=symbol_information.symbol,
-                    quantity=filled_order.quantity,
+                    quantity=quantity,
                     side=self.position_side.increase_side(),
                     position_side=self.position_side,
                     price=price)

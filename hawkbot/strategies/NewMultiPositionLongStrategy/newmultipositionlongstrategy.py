@@ -6,7 +6,7 @@ from hawkbot.core.model import Position, SymbolInformation, LimitOrder, OrderTyp
 from hawkbot.core.time_provider import now_timestamp
 from hawkbot.exchange.exchange import Exchange
 from hawkbot.strategies.abstract_base_strategy import AbstractBaseStrategy
-from hawkbot.utils import round_, calc_min_qty
+from hawkbot.utils import round_, calc_min_qty, fill_required_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +19,14 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
         self.cancel_orders_on_position_close = False
         self.cancel_no_position_open_orders_on_shutdown = False
 
-        self.step_size = 0.00025
-        self.order_quantity = 400
-        self.nr_buy_orders_on_exhange = 20
-        self.nr_sell_orders_on_exhange = 20
+        self.order_distance: float = None
+        self.nr_buy_orders_on_exchange: int = None
+        self.nr_sell_orders_on_exchange: int = None
+
+    def init_config(self):
+        super().init_config()
+        required_parameters = ['order_distance', 'nr_buy_orders_on_exchange', 'nr_sell_orders_on_exchange']
+        fill_required_parameters(target=self, config=self.strategy_config, required_parameters=required_parameters)
 
     def on_new_filled_orders(self,
                              symbol: str,
@@ -33,7 +37,7 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
         for filled_order in [o for o in new_filled_orders if o.position_side == self.position_side]:
             if filled_order.side == self.position_side.increase_side():
                 filled_price = filled_order.price
-                price = round_(number=filled_price + self.step_size, step=symbol_information.price_step) # for long, TP price is higher
+                price = round_(number=filled_price * (1 + self.order_distance), step=symbol_information.price_step) # for long, TP price is higher
                 order = LimitOrder(
                     order_type_identifier=OrderTypeIdentifier.TP,
                     symbol=symbol_information.symbol,
@@ -44,13 +48,17 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
                     reduce_only=True)
                 orders_to_add.append(order)
             else:
-                price = round_(number=filled_order.price - self.step_size, step=symbol_information.price_step) # for LONG, DCA price is lower
+                # TODO: check if current price already passed it by now
+                filled_price = filled_order.price
+                buy_price = filled_price / (1 + self.order_distance)
+                price = round_(number=buy_price, step=symbol_information.price_step) # for LONG, DCA price is lower
                 quantity = calc_min_qty(price=price,
                                         inverse=False,
                                         qty_step=symbol_information.quantity_step,
                                         min_qty=symbol_information.minimum_quantity,
                                         min_cost=symbol_information.minimal_buy_cost)
-                quantity = max(self.order_quantity, quantity)
+                # TODO: check if the wallet exposure has enough funds available to place a new order
+                price = min(price, self.exchange_state.get_last_price(symbol) - symbol_information.price_step)
 
                 order = LimitOrder(
                     order_type_identifier=OrderTypeIdentifier.DCA,
@@ -60,6 +68,9 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
                     position_side=self.position_side,
                     price=price)
                 orders_to_add.append(order)
+
+
+        # TODO: check if we need to add update the orders at the top or bottom
 
         logger.info(f'{symbol} {self.position_side.name}: Creating orders {orders_to_add}')
         self.order_executor.create_orders(orders_to_add)
@@ -77,15 +88,21 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
         logger.info(f'{symbol} {self.position_side.name}: Last filled order price = {last_filled_order.price}')
 
         new_orders = []
+        next_buy_price = last_filled_order.price
         # last filled order was a buy, so the first next buy order should be a step below last filled price
-        for i in range(1, self.nr_buy_orders_on_exhange):
-            next_buy_price = round_(number=last_filled_order.price - (i * self.step_size), step=symbol_information.price_step)
+        for i in range(1, self.nr_buy_orders_on_exchange + 1):
+            next_buy_price = next_buy_price / (1 + self.order_distance)
+            next_buy_price = round_(number=next_buy_price, step=symbol_information.price_step)
             quantity = calc_min_qty(price=next_buy_price,
                                     inverse=False,
                                     qty_step=symbol_information.quantity_step,
                                     min_qty=symbol_information.minimum_quantity,
                                     min_cost=symbol_information.minimal_buy_cost)
-            quantity = max(self.order_quantity, quantity)
+            # final_buy_price = min(next_buy_price, self.exchange_state.get_last_price(symbol) - symbol_information.price_step)
+            # TODO: what if the price has already passed the point where the order should be placed?
+                # place the order at the current price - 1
+                # aka min(current price -1, intended price)
+            # TODO: check if the wallet exposure has enough funds available to place a new order
             new_orders.append(LimitOrder(
                 order_type_identifier=OrderTypeIdentifier.DCA,
                 symbol=symbol_information.symbol,
@@ -96,15 +113,17 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
             logger.debug(f'{symbol} {self.position_side.name}: Should place BUY order {quantity}@{next_buy_price:f}')
 
         # last filled order was a buy, so the first next sell order should be a step above last filled price
-        for i in range(1, self.nr_sell_orders_on_exhange):
-            next_sell_price = last_filled_order.price + (i * self.step_size)
-            corresponding_buy_price = next_sell_price - (2 * self.step_size)
-            corresponding_buy_quantity = calc_min_qty(price=corresponding_buy_price,
+        next_sell_price = last_filled_order.price
+        for i in range(1, self.nr_sell_orders_on_exchange + 1):
+            next_sell_price = next_sell_price * (1 + self.order_distance)
+            next_sell_price = round_(number=next_sell_price, step=symbol_information.price_step)
+            corresponding_buy_price = (next_sell_price / (1 + self.order_distance)) / (1 + self.order_distance)
+            corresponding_buy_price = round_(number=corresponding_buy_price, step=symbol_information.price_step)
+            quantity = calc_min_qty(price=corresponding_buy_price,
                                                       inverse=False,
                                                       qty_step=symbol_information.quantity_step,
                                                       min_qty=symbol_information.minimum_quantity,
                                                       min_cost=symbol_information.minimal_buy_cost)
-            quantity = max(corresponding_buy_quantity, last_filled_order.quantity)
             new_orders.append(LimitOrder(
                 order_type_identifier=OrderTypeIdentifier.TP,
                 symbol=symbol_information.symbol,

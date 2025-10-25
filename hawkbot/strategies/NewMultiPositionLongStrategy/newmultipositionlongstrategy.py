@@ -117,7 +117,7 @@ class NewMultiPositionLongStrategy(AbstractBaseStrategy):
         for i in range(1, self.nr_sell_orders_on_exchange + 1):
             next_sell_price = next_sell_price * (1 + self.order_distance)
             next_sell_price = round_(number=next_sell_price, step=symbol_information.price_step)
-            corresponding_buy_price = (next_sell_price / (1 + self.order_distance)) / (1 + self.order_distance)
+            corresponding_buy_price = (next_sell_price / (1 + self.order_distance))
             corresponding_buy_price = round_(number=corresponding_buy_price, step=symbol_information.price_step)
             quantity = calc_min_qty(price=corresponding_buy_price,
                                                       inverse=False,
